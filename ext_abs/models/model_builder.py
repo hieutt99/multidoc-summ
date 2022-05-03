@@ -12,10 +12,17 @@ from models.optimizers import Optimizer
 def build_optim(args, model, checkpoint):
     """ Build optimizer """
 
-    if checkpoint is not None and not isinstance(checkpoint['optim'], Optimizer):
-        optim = checkpoint['optim'][0]
+    if checkpoint is not None:
+        if isinstance(checkpoint['optim'], Optimizer):
+            optim = checkpoint['optim']
+        else:
+            optim = checkpoint['optim'][0]
         saved_optimizer_state_dict = optim.optimizer.state_dict()
         optim.optimizer.load_state_dict(saved_optimizer_state_dict)
+
+        reset_step=False
+        if reset_step:
+            optim._step = 0
         if args.visible_gpus != '-1':
             for state in optim.optimizer.state.values():
                 for k, v in state.items():

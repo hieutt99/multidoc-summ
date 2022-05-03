@@ -248,7 +248,8 @@ class Trainer(object):
                                             range(batch.batch_size)]
                         else:
                             sent_scores, mask = self.model(src, segs, clss, mask, mask_cls)
-
+                            if labels.size() != sent_scores.size():
+                                sent_scores = sent_scores.view(labels.size())
                             loss = self.loss(sent_scores, labels.float())
                             loss = (loss * mask.float()).sum()
                             batch_stats = Statistics(float(loss.cpu().data.numpy()), len(labels))

@@ -317,7 +317,8 @@ class Translator(object):
             topk_log_probs = topk_scores * length_penalty
 
             # Resolve beam origin and true word ids.
-            topk_beam_index = topk_ids.div(vocab_size)
+            # topk_beam_index = topk_ids.div(vocab_size)
+            topk_beam_index = torch.div(topk_ids, vocab_size, rounding_mode='floor')
             topk_ids = topk_ids.fmod(vocab_size)
 
             # Map beam_index to batch_index in the flat representation.
@@ -325,6 +326,7 @@ class Translator(object):
                     topk_beam_index
                     + beam_offset[:topk_beam_index.size(0)].unsqueeze(1))
             select_indices = batch_index.view(-1)
+            # print(select_indices)
 
             # Append last prediction.
             alive_seq = torch.cat(

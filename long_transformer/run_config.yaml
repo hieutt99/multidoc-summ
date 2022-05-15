@@ -22,7 +22,7 @@ report_rouge: True
 batch_size: 2000
 test_batch_size: 200
 
-max_pos: 512 
+max_pos: 1024
 use_interval: True
 
 # hyperparameters
@@ -31,7 +31,7 @@ param_init: 0
 param_init_glorot: True
 ## optimizer
 optim: adam
-lr: 1.0e-5
+lr: 1.0e-4
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000
@@ -41,8 +41,8 @@ max_grad_norm: 0
 
 # train phase
 save_checkpoint_steps: 1000
-accum_count: 1
-report_every: 1
+accum_count: 2
+report_every: 100
 train_steps: 20000
 recall_eval: False
 ## trainer 
@@ -56,7 +56,7 @@ max_tgt_len: 200
 ext_predict_nsents: 10
 
 # gpu
-visible_gpus: '-1'
+visible_gpus: '0'
 gpu_ranks: '0'
 world_size: 1
 seed: 666

@@ -99,6 +99,8 @@ class RunConfig:
             raise Exception("model config file invalid") 
         if not self.train_from:
             self.train_from = ''
+        if not self.test_from:
+            self.test_from = ''
 
 def load_config(run_config_path):
     if os.path.exists(run_config_path):

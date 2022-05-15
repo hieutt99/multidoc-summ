@@ -235,7 +235,7 @@ def train_single_ext(args, device_id):
         return dataloader.Dataloader(args, load_dataset(args, 'train', shuffle=True), args.batch_size, device,
                                       shuffle=True, is_test=False)
 
-    model = build_model(args, device, checkpoint)
+    model = build_model(args.model_config, device, checkpoint)
     optim = train_builder.build_optim(args, model, checkpoint)
 
     logger.info(model)

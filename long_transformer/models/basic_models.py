@@ -49,6 +49,9 @@ class BasicTransformerSentenceClassification(nn.Module):
         self.encoder = BasicTransformerEncoder(encoder_block, args.num_encoder_blocks, 
                             nn.LayerNorm(args.d_model, eps=args.layer_norm_eps))
 
+        self.wo = nn.Linear(args.d_model, 1, bias=True)
+        self.sigmoid = nn.Sigmoid()
+
     def forward(self, src, segs, docs, clss, mask_src, mask_cls):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
@@ -56,5 +59,7 @@ class BasicTransformerSentenceClassification(nn.Module):
                             doc_type_ids=docs)
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float()
-        sent_scores = self.encoder(sents_vec, mask_cls).squeeze(-1)
+        x = self.encoder(sents_vec, mask_cls).squeeze(-1)
+        sent_scores = self.sigmoid(self.wo(x))
+        sent_scores = sent_scores.squeeze(-1) * mask_cls.float()
         return sent_scores, mask_cls

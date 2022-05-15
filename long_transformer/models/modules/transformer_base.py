@@ -3,6 +3,7 @@ import torch
 import torch.nn as nn 
 from .attention import *
 from .utils import _get_clones
+from .attention import MultiHeadedAttention
 
 class PositionwiseFeedForward(nn.Module):
     """ A two-layer Feed-Forward-Network with residual layer norm.
@@ -38,8 +39,7 @@ class BasicTransformerEncoderBlock(nn.Module):
     def __init__(self, embed_dim, num_heads, d_ff, dropout, norm_first=False):
         super(BasicTransformerEncoderBlock, self).__init__()
 
-        self.self_attention = nn.MultiheadAttention(embed_dim, num_heads, 
-                                                        dropout, batch_first=True)
+        self.self_attention = MultiHeadedAttention(embed_dim, num_heads, dropout)
         """
         MultiheadAttention 
         input : query, key, value, key_padding_mask, need_weights(default True to return weights), 
@@ -68,22 +68,23 @@ class BasicTransformerEncoderBlock(nn.Module):
             x = x + self.self_attention_block(self.layer_norm1(x), mask, src_key_padding_mask)
             x = x + self.pff(self.layer_norm2(x))
         else:
+            mask = mask.unsqueeze(1)
             x = self.layer_norm1(x + self.self_attention_block(x, mask, src_key_padding_mask))
             x = self.layer_norm2(x + self.pff(x))
 
         return x
 
     def self_attention_block(self, x, attn_mask, key_padding_mask):
-        x = self.self_attention(x, x, x, attn_mask=attn_mask, 
-                                    key_padding_mask=key_padding_mask,
-                                    need_weights=False)
+        x = self.self_attention(x, x, x, mask=attn_mask)
         return self.dropout1(x)
 
 class BasicTransformerDecoderBlock(nn.Module):
     def __init__(self, d_model, num_heads, d_ff=2048, dropout=0.1, norm_first=False):
         super(BasicTransformerDecoderBlock, self).__init__()
-        self.self_attn = nn.MultiheadAttention(d_model, num_heads, dropout=dropout, batch_first=True)
-        self.multihead_attn = nn.MultiheadAttention(d_model, num_heads, dropout=dropout, batch_first=True)
+        
+        self.self_attn = MultiHeadedAttention(d_model, num_heads, dropout=dropout)
+        self.multihead_attn = MultiHeadedAttention(d_model, num_heads, dropout=dropout)
+
         self.feed_forward = PositionwiseFeedForward(d_model, d_ff, dropout)
         self.layer_norm_1 = nn.LayerNorm(d_model, eps=1e-6)
         self.layer_norm_2 = nn.LayerNorm(d_model, eps=1e-6)
@@ -111,9 +112,7 @@ class BasicTransformerDecoderBlock(nn.Module):
         return x
 
     def self_attention_block(self, x, attn_mask, key_padding_mask):
-        x = self.self_attn(x, x, x, attn_mask=attn_mask, 
-                                key_padding_mask=key_padding_mask,
-                                need_weights=False)
+        x = self.self_attention(x, x, x, mask=attn_mask)
         return self.dropout1(x)
 
     def multihead_attention_block(self, x, mem, attn_mask, key_padding_mask):
@@ -134,7 +133,7 @@ class BasicTransformerEncoder(nn.Module):
         output = src 
         
         for layer in self.layers:
-            output = layer(output, src_mask=mask, 
+            output = layer(output, mask=mask, 
                 src_key_padding_mask=src_key_padding_mask)
         if self.norm is not None:
             output = self.norm(output)

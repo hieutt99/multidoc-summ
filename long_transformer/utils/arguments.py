@@ -50,6 +50,9 @@ class RunConfig:
     batch_size: int
     test_batch_size: int
 
+    max_pos: int 
+    use_interval: bool
+
     log_file: str 
     seed: int 
     visible_gpus: str
@@ -91,13 +94,15 @@ class RunConfig:
             if k != 'model_config':
                 setattr(self, k, v)
         if os.path.exists(self.model_config_path):
-            self.model_config = ModelConfig(load_config_yaml(self.model_config_path))
+            self.model_config = ModelConfig(**load_config_yaml(self.model_config_path))
         else:
             raise Exception("model config file invalid") 
+        if not self.train_from:
+            self.train_from = ''
 
 def load_config(run_config_path):
     if os.path.exists(run_config_path):
-        run_config = RunConfig(load_config_yaml(run_config_path))
+        run_config = RunConfig(**load_config_yaml(run_config_path))
     else:
         raise Exception("run config file invalid")
     return run_config 

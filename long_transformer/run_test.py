@@ -6,10 +6,12 @@ from __future__ import division
 
 import argparse
 import os
+from re import L
 
 from numpy import load
+from models.model_utils import build_model
 from others.logging import init_logger
-from train_abstractive import validate_abs, train_abs, baseline, test_abs, test_text_abs
+# from train_abstractive import validate_abs, train_abs, baseline, test_abs, test_text_abs
 from train_extractive import train_ext, validate_ext, test_ext
 from utils.arguments import load_config
 from utils.arguments import RunConfig, ModelConfig
@@ -33,9 +35,8 @@ if __name__ == '__main__':
 
     run_config = load_config(args.run_config)
 
-    device = "cpu" if run_config.visible_gpus == '-1' else "cuda"
-    dataloader.Dataloader(run_config, load_dataset(run_config, 'train', shuffle=True), run_config.batch_size, device,
-                                      shuffle=True, is_test=False)
-
     init_logger(run_config.log_file)
-    pass 
+    device = "cpu" if run_config.visible_gpus == '-1' else "cuda"
+    device_id = 0 if device == "cuda" else -1
+
+    train_ext(run_config, device_id)

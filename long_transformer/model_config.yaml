@@ -1,5 +1,6 @@
 
 
+model_name: basic_ext
 freeze_bert: False
 d_model: 768
 num_heads: 8

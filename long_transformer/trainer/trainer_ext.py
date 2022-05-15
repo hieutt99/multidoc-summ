@@ -1,4 +1,5 @@
 import os
+from attr import asdict
 
 import numpy as np
 import torch
@@ -8,7 +9,7 @@ import distributed
 from trainer.reporter_ext import ReportMgr, Statistics
 from others.logging import logger
 from others.utils import test_rouge, rouge_results_to_str
-
+from dataclasses import asdict
 
 def _tally_parameters(model):
     n_params = sum([p.nelement() for p in model.parameters()])
@@ -355,7 +356,7 @@ class Trainer(object):
         checkpoint = {
             'model': model_state_dict,
             # 'generator': generator_state_dict,
-            'opt': self.args,
+            'opt': asdict(self.args.model_config),
             'optim': self.optim,
         }
         checkpoint_path = os.path.join(self.args.model_path, 'model_step_%d.pt' % step)

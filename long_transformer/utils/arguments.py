@@ -17,6 +17,7 @@ class ModelConfig:
     layer_norm_eps: float
     d_ff: int
     bert_config: BertConfig
+    max_position_embeddings: int
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():

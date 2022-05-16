@@ -5,6 +5,7 @@ from .modules.transformer_base import (BasicTransformerModel,
                                         BasicTransformerEncoder, 
                                         BasicTransformerEncoderBlock, 
                                         PositionwiseFeedForward,)
+from bert import PositionalEncoding
 from .bert_utils import build_bert
 
 class BasicTransformerSentenceGeneration(nn.Module):
@@ -44,10 +45,16 @@ class BasicTransformerSentenceClassification(nn.Module):
         if args.freeze_bert:
             self.bert.eval()
 
+        self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
+
         encoder_block = BasicTransformerEncoderBlock(args.d_model, args.num_heads, args.d_ff, 
                                                     args.dropout, args.norm_first)
         self.encoder = BasicTransformerEncoder(encoder_block, args.num_encoder_blocks, 
                             nn.LayerNorm(args.d_model, eps=args.layer_norm_eps))
+
+        for p in self.encoder.parameters():
+            if p.dim()>1:
+                nn.init.xavier_uniform_(p)
 
         self.wo = nn.Linear(args.d_model, 1, bias=True)
         self.sigmoid = nn.Sigmoid()
@@ -57,8 +64,17 @@ class BasicTransformerSentenceClassification(nn.Module):
                             attention_mask=mask_src,
                             token_type_ids=segs, 
                             doc_type_ids=docs)
+
+        
+
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float()
+
+
+        pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
+        sents_vec = sents_vec * mask_cls[:, :, None].float()
+        sents_vec = sents_vec + pos_emb
+
         x = self.encoder(sents_vec, mask_cls).squeeze(-1)
         sent_scores = self.sigmoid(self.wo(x))
         sent_scores = sent_scores.squeeze(-1) * mask_cls.float()

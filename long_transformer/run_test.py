@@ -34,6 +34,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     run_config = load_config(args.run_config)
+    print(run_config.lr)
 
     init_logger(run_config.log_file)
     device = "cpu" if run_config.visible_gpus == '-1' else "cuda"

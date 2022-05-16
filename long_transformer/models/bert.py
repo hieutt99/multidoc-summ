@@ -51,7 +51,8 @@ class CustomBertEmbeddings(nn.Module):
                 position_embedding_type="absolute"):
         super().__init__()
         self.word_embeddings = nn.Embedding(vocab_size, hidden_size, padding_idx=pad_token_id)
-        self.position_embeddings = PositionalEncoding(hidden_size, max_position_embeddings)
+        self.position_embeddings = nn.Embedding(max_position_embeddings, hidden_size)
+        # self.position_embeddings = PositionalEncoding(hidden_size, max_position_embeddings)
         self.token_type_embeddings = nn.Embedding(type_vocab_size, hidden_size)
         self.doc_type_embeddings = nn.Embedding(type_doc_size, hidden_size)
 

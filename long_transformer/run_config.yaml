@@ -2,8 +2,8 @@ task: ext
 mode: train
 
 bert_data_path: ./multi_news_bert_shards/multi_news.bert_data
-model_path: ./models/
-result_path: /results/multinews
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -19,7 +19,7 @@ report_rouge: True
 
 
 # general
-batch_size: 2000
+batch_size: 3000
 test_batch_size: 200
 
 max_pos: 1024

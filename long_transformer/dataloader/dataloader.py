@@ -25,7 +25,7 @@ class Batch(object):
             pre_segs = [x[2] for x in data]
             pre_docs = [x[3] for x in data]
             pre_clss = [x[4] for x in data]
-            pre_src_sent_labels = [x[4] for x in data]
+            pre_src_sent_labels = [x[5] for x in data]
 
             src = torch.tensor(self._pad(pre_src, 0))
             tgt = torch.tensor(self._pad(pre_tgt, 0))

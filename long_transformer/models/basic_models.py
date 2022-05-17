@@ -5,7 +5,7 @@ from .modules.transformer_base import (BasicTransformerModel,
                                         BasicTransformerEncoder, 
                                         BasicTransformerEncoderBlock, 
                                         PositionwiseFeedForward,)
-from bert import PositionalEncoding
+from .bert import PositionalEncoding
 from .bert_utils import build_bert
 
 class BasicTransformerSentenceGeneration(nn.Module):
@@ -15,6 +15,8 @@ class BasicTransformerSentenceGeneration(nn.Module):
         self.bert = build_bert(args.bert_config) 
         if args.freeze_bert:
             self.bert.eval()
+        else: 
+            self.bert.train()
 
         self.transformer_model = BasicTransformerModel(
             d_model=args.d_model, 
@@ -44,6 +46,8 @@ class BasicTransformerSentenceClassification(nn.Module):
         self.bert = build_bert(bert_config=args.bert_config) 
         if args.freeze_bert:
             self.bert.eval()
+        else: 
+            self.bert.train()
 
         self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
 
@@ -54,7 +58,7 @@ class BasicTransformerSentenceClassification(nn.Module):
 
         for p in self.encoder.parameters():
             if p.dim()>1:
-                nn.init.xavier_uniform_(p)
+                nn.init.xavier_uniform_(p, gain=0.8)
 
         self.wo = nn.Linear(args.d_model, 1, bias=True)
         self.sigmoid = nn.Sigmoid()

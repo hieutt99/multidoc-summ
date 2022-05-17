@@ -86,7 +86,7 @@ class RunConfig:
     ext_predict_nsents: int
 
     visible_gpus: str
-    gpu_ranks: str
+    gpu_ranks: ...
     world_size: int
     seed: int
 

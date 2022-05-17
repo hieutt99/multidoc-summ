@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     run_config = load_config(args.run_config)
     
-    run_config.gpu_ranks = [int(i) for i in range(len(args.visible_gpus.split(',')))]
+    run_config.gpu_ranks = [int(i) for i in range(len(run_config.visible_gpus.split(',')))]
     run_config.world_size = len(run_config.gpu_ranks)
     os.environ["CUDA_VISIBLE_DEVICES"] = run_config.visible_gpus
 

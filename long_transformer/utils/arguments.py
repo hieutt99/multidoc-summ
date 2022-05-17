@@ -90,6 +90,8 @@ class RunConfig:
     world_size: int
     seed: int
 
+    test_all: bool = False
+
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             if k != 'model_config':

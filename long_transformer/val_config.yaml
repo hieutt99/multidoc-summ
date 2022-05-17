@@ -1,5 +1,5 @@
 task: ext
-mode: train
+mode: validate
 
 bert_data_path: ./multi_news_bert_shards/multi_news.bert_data
 model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/

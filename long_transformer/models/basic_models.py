@@ -43,7 +43,7 @@ class BasicTransformerSentenceClassification(nn.Module):
     def __init__(self, args, **kwargs):
         super(BasicTransformerSentenceClassification, self).__init__()
 
-        self.bert = build_bert(bert_config=args.bert_model) 
+        self.bert = build_bert(args.bert_model) 
         if args.freeze_bert:
             self.bert.eval()
         else: 

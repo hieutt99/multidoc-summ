@@ -63,6 +63,7 @@ class BasicTransformerSentenceClassification(nn.Module):
                 nn.init.xavier_uniform_(p, gain=0.8)
 
         self.wo = nn.Linear(args.d_model, 1, bias=True)
+        nn.init.xavier_uniform_(self.wo.parameters(), gain=0.8)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, src, segs, docs, clss, mask_src, mask_cls):

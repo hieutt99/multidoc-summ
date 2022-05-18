@@ -58,7 +58,6 @@ class BasicTransformerEncoderBlock(nn.Module):
         self.layer_norm1 = nn.LayerNorm(embed_dim, eps=1e-6)
         self.layer_norm2 = nn.LayerNorm(embed_dim, eps=1e-6)
         self.dropout1 = nn.Dropout(dropout)
-        self.dropout2 = nn.Dropout(dropout)
         self.norm_first = norm_first
 
     def forward(self, src, mask: Optional[torch.Tensor]=None, 

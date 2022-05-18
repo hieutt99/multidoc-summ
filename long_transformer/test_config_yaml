@@ -11,7 +11,7 @@ checkpoint: null
 
 
 train_from: null
-test_from: null
+test_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/model_step_13000.pt
 log_file: ./logs/model_log
 
 block_trigram: True

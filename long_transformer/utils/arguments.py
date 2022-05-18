@@ -16,13 +16,15 @@ class ModelConfig:
     num_encoder_blocks: int
     layer_norm_eps: float
     d_ff: int
-    bert_config: BertConfig
+    # bert_config: BertConfig
     max_position_embeddings: int
+    bert_model: str = 'bert-base-cased'
+    type_doc_size: int = 2
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
             if k == 'bert_config':
-                self.bert_config = BertConfig(**v)
+                self.bert_config = BertConfig(**v) if type(v) == dict else v
             else:
                 setattr(self, k, v)
 

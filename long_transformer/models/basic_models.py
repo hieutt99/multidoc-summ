@@ -49,6 +49,12 @@ class BasicTransformerSentenceClassification(nn.Module):
         else: 
             self.bert.train()
 
+        if(args.max_position_embeddings>512):
+            my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
+            my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
+            my_pos_embeddings.weight.data[512:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
+            self.bert.embeddings.position_embeddings = my_pos_embeddings
+
         self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
         self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
         self.norm = nn.LayerNorm(args.d_model, eps=1e-6)
@@ -63,26 +69,24 @@ class BasicTransformerSentenceClassification(nn.Module):
                 nn.init.xavier_uniform_(p, gain=0.8)
 
         self.wo = nn.Linear(args.d_model, 1, bias=True)
-        nn.init.xavier_uniform_(self.wo.parameters(), gain=0.8)
+        nn.init.xavier_uniform_(self.wo.weight, gain=0.8)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, src, segs, docs, clss, mask_src, mask_cls):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             token_type_ids=segs, )
-        doc_embeddings = self.doc_type_embeddings(docs)
-        top_vec = top_vec + doc_embeddings
-        top_vec = self.norm(top_vec)
+        # doc_embeddings = self.doc_type_embeddings(docs)
+        # top_vec = top_vec + doc_embeddings
+        # top_vec = self.norm(top_vec)
         
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
+        sents_vec = sents_vec * mask_cls[:, :, None].float()   
+
+        pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
         sents_vec = sents_vec * mask_cls[:, :, None].float()
-
-        
-
-        # pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
-        # sents_vec = sents_vec * mask_cls[:, :, None].float()
-        # sents_vec = sents_vec + pos_emb
+        sents_vec = sents_vec + pos_emb
 
         x = self.encoder(sents_vec, mask_cls).squeeze(-1)
         sent_scores = self.sigmoid(self.wo(x))

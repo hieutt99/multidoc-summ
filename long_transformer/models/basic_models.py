@@ -66,19 +66,19 @@ class BasicTransformerSentenceClassification(nn.Module):
 
         for p in self.encoder.parameters():
             if p.dim()>1:
-                nn.init.xavier_uniform_(p, gain=0.8)
+                nn.init.xavier_uniform_(p)
 
         self.wo = nn.Linear(args.d_model, 1, bias=True)
-        nn.init.xavier_uniform_(self.wo.weight, gain=0.8)
+        nn.init.xavier_uniform_(self.wo.weight)
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, src, segs, docs, clss, mask_src, mask_cls):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             token_type_ids=segs, )
-        # doc_embeddings = self.doc_type_embeddings(docs)
-        # top_vec = top_vec + doc_embeddings
-        # top_vec = self.norm(top_vec)
+        doc_embeddings = self.doc_type_embeddings(docs) 
+        top_vec = top_vec + doc_embeddings
+        top_vec = self.norm(top_vec)
         
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]

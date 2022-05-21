@@ -48,7 +48,13 @@ class BasicTransformerSentenceClassification(nn.Module):
             self.bert.eval()
         else: 
             self.bert.train()
-
+        self.bert.embeddings.register_buffer("position_ids", torch.arange(args.max_position_embeddings).expand((1, -1)))
+        # self.bert.register_buffer(
+        #         "token_type_ids",
+        #         torch.zeros(self.bert.position_ids.size(), dtype=torch.long),
+        #         persistent=False,
+        #     )
+            
         if(args.max_position_embeddings>512):
             my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
             my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
@@ -73,9 +79,16 @@ class BasicTransformerSentenceClassification(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, src, segs, docs, clss, mask_src, mask_cls):
+        # pytorch_transformers 
+        # top_vec, _ = self.bert(input_ids=src,
+        #                     attention_mask=mask_src,
+        #                     token_type_ids=segs, )
+
+        # huggingface bert
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
-                            token_type_ids=segs, )
+                            token_type_ids=segs, return_dict=False)
+
         # doc_embeddings = self.doc_type_embeddings(docs) 
         # top_vec = top_vec + doc_embeddings
         # top_vec = self.norm(top_vec)

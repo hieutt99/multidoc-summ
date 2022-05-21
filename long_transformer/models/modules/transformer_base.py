@@ -64,10 +64,10 @@ class BasicTransformerEncoderBlock(nn.Module):
         src_key_padding_mask: Optional[torch.Tensor]=None):
         x = src
         if self.norm_first:
+            mask = mask.unsqueeze(1)
             x = x + self.self_attention_block(self.layer_norm1(x), mask, src_key_padding_mask)
             x = x + self.pff(self.layer_norm2(x))
         else:
-            mask = mask.unsqueeze(1)
             x = self.layer_norm1(x + self.self_attention_block(x, mask, src_key_padding_mask))
             x = self.layer_norm2(x + self.pff(x))
 

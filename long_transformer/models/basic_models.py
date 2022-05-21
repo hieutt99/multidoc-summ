@@ -76,9 +76,9 @@ class BasicTransformerSentenceClassification(nn.Module):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             token_type_ids=segs, )
-        doc_embeddings = self.doc_type_embeddings(docs) 
-        top_vec = top_vec + doc_embeddings
-        top_vec = self.norm(top_vec)
+        # doc_embeddings = self.doc_type_embeddings(docs) 
+        # top_vec = top_vec + doc_embeddings
+        # top_vec = self.norm(top_vec)
         
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]

@@ -1,6 +1,6 @@
 # from .bert import CustomBertModel, BertConfig
-# from transformers import BertModel
-from pytorch_transformers import BertModel
+from transformers import BertModel
+# from pytorch_transformers import BertModel
 
 
 # def build_bert(bert_config, pretrained=None):

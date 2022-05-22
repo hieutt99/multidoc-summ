@@ -159,7 +159,7 @@ class ExtSummarizer(nn.Module):
             self.bert.model = BertModel(bert_config)
             self.ext_layer = Classifier(self.bert.model.config.hidden_size)
 
-        if(args.max_pos>512):
+        if(args.max_position_embeddings>512):
             my_pos_embeddings = nn.Embedding(args.max_pos, self.bert.model.config.hidden_size)
             my_pos_embeddings.weight.data[:512] = self.bert.model.embeddings.position_embeddings.weight.data
             my_pos_embeddings.weight.data[512:] = self.bert.model.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_pos-512,1)

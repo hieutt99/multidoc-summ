@@ -97,6 +97,7 @@ class BasicTransformerSentenceClassification(nn.Module):
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float()   
 
+        # with cosine positional
         pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
         sents_vec = sents_vec * mask_cls[:, :, None].float()
         sents_vec = sents_vec + pos_emb

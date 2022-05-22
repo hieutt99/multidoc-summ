@@ -48,7 +48,7 @@ class Batch(object):
             setattr(self, 'src', src.to(device))
             setattr(self, 'tgt', tgt.to(device))
             setattr(self, 'segs', segs.to(device))
-            setattr(self, 'docs', segs.to(device))
+            setattr(self, 'docs', docs.to(device))
             setattr(self, 'mask_src', mask_src.to(device))
             setattr(self, 'mask_tgt', mask_tgt.to(device))
 

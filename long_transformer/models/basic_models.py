@@ -89,9 +89,9 @@ class BasicTransformerSentenceClassification(nn.Module):
                             attention_mask=mask_src,
                             token_type_ids=segs, return_dict=False)
 
-        # doc_embeddings = self.doc_type_embeddings(docs) 
-        # top_vec = top_vec + doc_embeddings
-        # top_vec = self.norm(top_vec)
+        doc_embeddings = self.doc_type_embeddings(docs) 
+        top_vec = top_vec + doc_embeddings
+        top_vec = self.norm(top_vec)
         
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]

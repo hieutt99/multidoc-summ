@@ -1,5 +1,5 @@
 # from .bert import CustomBertModel, BertConfig
-from transformers import BertModel
+from transformers import BertModel, LEDModel
 # from pytorch_transformers import BertModel
 
 
@@ -11,9 +11,16 @@ from transformers import BertModel
 #     return bert 
 
 
+# def build_bert(model_name):
+#     try:
+#         bert = BertModel.from_pretrained(model_name)
+#         return bert 
+#     except:
+#         raise Exception("Invalid BERT model")
+
 def build_bert(model_name):
     try:
-        bert = BertModel.from_pretrained(model_name)
+        bert = LEDModel.from_pretrained(model_name)
         return bert 
     except:
         raise Exception("Invalid BERT model")

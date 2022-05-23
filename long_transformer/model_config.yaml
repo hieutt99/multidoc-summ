@@ -11,8 +11,8 @@ layer_norm_eps: 1.0e-6
 d_ff: 2048
 max_position_embeddings: 512
 
-# bert_model: bert-base-cased
-bert_model: allenai/led-base-16384
+bert_model: bert-base-cased
+# bert_model: allenai/led-base-16384
 type_doc_size: 2
 
 # bert_config:

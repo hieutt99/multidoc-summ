@@ -58,6 +58,7 @@ class BasicTransformerEncoderBlock(nn.Module):
         self.layer_norm1 = nn.LayerNorm(embed_dim, eps=1e-6)
         self.layer_norm2 = nn.LayerNorm(embed_dim, eps=1e-6)
         self.dropout1 = nn.Dropout(dropout)
+        self.dropout2 = nn.Dropout(dropout)
         self.norm_first = norm_first
 
     def forward(self, src, mask: Optional[torch.Tensor]=None, 
@@ -65,11 +66,13 @@ class BasicTransformerEncoderBlock(nn.Module):
         x = src
         if self.norm_first:
             mask = mask.unsqueeze(1)
-            x = x + self.self_attention_block(self.layer_norm1(x), mask, src_key_padding_mask)
-            x = x + self.pff(self.layer_norm2(x))
+            x = self.layer_norm1(x)
+            # x = x + self.self_attention_block(x, mask, src_key_padding_mask)
+            x = x + self.dropout2(self.self_attention_block(x, mask, src_key_padding_mask))
+            x = self.pff(x)
         else:
             x = self.layer_norm1(x + self.self_attention_block(x, mask, src_key_padding_mask))
-            x = self.layer_norm2(x + self.pff(x))
+            x = self.layer_norm2(self.pff(x))
 
         return x
 

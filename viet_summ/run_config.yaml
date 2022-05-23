@@ -10,7 +10,7 @@ model_config_path: model_config.yaml
 checkpoint: null
 
 
-train_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/model_step_18000.pt
+train_from: null
 test_from: null
 log_file: ./logs/model_log
 
@@ -32,7 +32,7 @@ param_init: 0
 param_init_glorot: True
 ## optimizer
 optim: adam
-lr: 1.0e-4
+lr: 2.0e-3
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000

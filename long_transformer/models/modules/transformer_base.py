@@ -69,11 +69,10 @@ class BasicTransformerEncoderBlock(nn.Module):
             x = self.layer_norm1(x)
             # x = x + self.self_attention_block(x, mask, src_key_padding_mask)
             x = x + self.dropout2(self.self_attention_block(x, mask, src_key_padding_mask))
-            # x = x + self.pff(x)
             x = self.pff(x)
         else:
             x = self.layer_norm1(x + self.self_attention_block(x, mask, src_key_padding_mask))
-            x = self.layer_norm2(x + self.pff(x))
+            x = self.layer_norm2(self.pff(x))
 
         return x
 

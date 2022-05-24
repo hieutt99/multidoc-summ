@@ -57,7 +57,7 @@ max_tgt_len: 200
 ext_predict_nsents: 10
 
 # gpu
-visible_gpus: '0'
+visible_gpus: '-1'
 gpu_ranks: '0'
 world_size: 1
 seed: 666

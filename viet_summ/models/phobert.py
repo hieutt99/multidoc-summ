@@ -48,7 +48,8 @@ class BasicViTransformerSentenceClassification(nn.Module):
         nn.init.xavier_uniform_(self.wo.weight)
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, src, segs, docs, clss, mask_src, mask_cls):
+    def forward(self, src, segs, clss, mask_src, mask_cls):
+        print(src.size())
         # pytorch_transformers 
         # top_vec, _ = self.bert(input_ids=src,
         #                     attention_mask=mask_src,
@@ -58,10 +59,7 @@ class BasicViTransformerSentenceClassification(nn.Module):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             token_type_ids=segs, return_dict=False)
-
-        # doc_embeddings = self.doc_type_embeddings(docs) 
-        # top_vec = top_vec + doc_embeddings
-        # top_vec = self.norm(top_vec)
+        print(top_vec.size())
         
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]

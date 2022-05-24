@@ -1,3 +1,3 @@
-# https://drive.google.com/file/d/1--ML_bqgpom6XEwnxmr0YGO056dBTHp3/view?usp=sharing
-gdown --id 1--ML_bqgpom6XEwnxmr0YGO056dBTHp3
-unzip ./multi_news_bert_shards.zip
+# https://drive.google.com/file/d/1-07IHGFpfG-1Ulim9jQvrNhmuWUfKsH4/view?usp=sharing
+gdown --id 1-07IHGFpfG-1Ulim9jQvrNhmuWUfKsH4
+unzip ./vietnews_bert_data_shards.zip

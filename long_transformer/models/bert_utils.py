@@ -11,16 +11,16 @@ from transformers import BertModel, LEDModel
 #     return bert 
 
 
-# def build_bert(model_name):
-#     try:
-#         bert = BertModel.from_pretrained(model_name)
-#         return bert 
-#     except:
-#         raise Exception("Invalid BERT model")
-
 def build_bert(model_name):
     try:
-        bert = LEDModel.from_pretrained(model_name)
+        bert = BertModel.from_pretrained(model_name)
         return bert 
     except:
         raise Exception("Invalid BERT model")
+
+# def build_bert(model_name):
+#     try:
+#         bert = LEDModel.from_pretrained(model_name)
+#         return bert 
+#     except:
+#         raise Exception("Invalid BERT model")

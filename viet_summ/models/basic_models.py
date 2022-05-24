@@ -78,7 +78,7 @@ class BasicTransformerSentenceClassification(nn.Module):
         nn.init.xavier_uniform_(self.wo.weight)
         self.sigmoid = nn.Sigmoid()
 
-    def forward(self, src, segs, docs, clss, mask_src, mask_cls):
+    def forward(self, src, segs, clss, mask_src, mask_cls):
         # pytorch_transformers 
         # top_vec, _ = self.bert(input_ids=src,
         #                     attention_mask=mask_src,

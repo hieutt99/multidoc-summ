@@ -23,7 +23,6 @@ class Batch(object):
             pre_src = [x[0] for x in data]
             pre_tgt = [x[1] for x in data]
             pre_segs = [x[2] for x in data]
-            pre_docs = [x[3] for x in data]
             pre_clss = [x[4] for x in data]
             pre_src_sent_labels = [x[5] for x in data]
 
@@ -31,7 +30,6 @@ class Batch(object):
             tgt = torch.tensor(self._pad(pre_tgt, 0))
 
             segs = torch.tensor(self._pad(pre_segs, 0))
-            docs = torch.tensor(self._pad(pre_docs, 0))
             mask_src = ~ (src == 0)
             mask_tgt = ~ (tgt == 0)
 
@@ -48,7 +46,6 @@ class Batch(object):
             setattr(self, 'src', src.to(device))
             setattr(self, 'tgt', tgt.to(device))
             setattr(self, 'segs', segs.to(device))
-            setattr(self, 'docs', docs.to(device))
             setattr(self, 'mask_src', mask_src.to(device))
             setattr(self, 'mask_tgt', mask_tgt.to(device))
 
@@ -198,7 +195,6 @@ class DataIterator(object):
         tgt = ex['tgt'][:self.args.max_tgt_len][:-1]+[2]
         src_sent_labels = ex['src_sent_labels']
         segs = ex['segs']
-        docs = ex['docs']
         if(not self.args.use_interval):
             segs=[0]*len(segs)
         clss = ex['clss']
@@ -208,7 +204,6 @@ class DataIterator(object):
         end_id = [src[-1]]
         src = src[:-1][:self.args.max_pos - 1] + end_id
         segs = segs[:self.args.max_pos]
-        docs = docs[:self.args.max_pos]
         max_sent_id = bisect.bisect_left(clss, self.args.max_pos)
         src_sent_labels = src_sent_labels[:max_sent_id]
         clss = clss[:max_sent_id]
@@ -217,9 +212,9 @@ class DataIterator(object):
 
 
         if(is_test):
-            return src, tgt, segs, docs, clss, src_sent_labels, src_txt, tgt_txt
+            return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
         else:
-            return src, tgt, segs, docs, clss, src_sent_labels
+            return src, tgt, segs, clss, src_sent_labels
 
     def batch_buffer(self, data, batch_size):
         minibatch, size_so_far = [], 0

@@ -25,11 +25,15 @@ class BasicViTransformerSentenceClassification(nn.Module):
         #         persistent=False,
         #     )
             
-        if(args.max_position_embeddings>512):
-            my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
-            my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
-            my_pos_embeddings.weight.data[512:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
-            self.bert.embeddings.position_embeddings = my_pos_embeddings
+        if(args.max_position_embeddings>258):
+            # my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
+            # my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
+            # my_pos_embeddings.weight.data[512:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
+            # self.bert.embeddings.position_embeddings = my_pos_embeddings
+
+            self.bert.embeddings.position_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
+
+        self.bert.embeddings.token_type_embeddings = nn.Embedding(2, self.bert.config.hidden_size)
 
         self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
         self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
@@ -49,17 +53,16 @@ class BasicViTransformerSentenceClassification(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
     def forward(self, src, segs, clss, mask_src, mask_cls):
-        print(src.size())
         # pytorch_transformers 
         # top_vec, _ = self.bert(input_ids=src,
         #                     attention_mask=mask_src,
         #                     token_type_ids=segs, )
 
         # huggingface bert
+
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             token_type_ids=segs, return_dict=False)
-        print(top_vec.size())
         
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]

@@ -1,9 +1,9 @@
 task: ext
-mode: validate
+mode: test
 
-bert_data_path: ./vietnews_bert_data_shards/vietnews.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
+bert_data_path: ./multi_news_bert_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -11,7 +11,7 @@ checkpoint: null
 
 
 train_from: null
-test_from: null
+test_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/model_step_20000.pt
 log_file: ./logs/model_log
 
 block_trigram: True
@@ -22,8 +22,8 @@ report_rouge: True
 batch_size: 3000
 test_batch_size: 200
 
-max_pos: 512
-max_position_embeddings: 512
+max_pos: 1000
+max_position_embeddings: 1000
 use_interval: True
 
 # hyperparameters
@@ -54,13 +54,11 @@ beam_size: 5
 min_length: 5
 max_length: 15
 max_tgt_len: 200 
-ext_predict_nsents: 3
+ext_predict_nsents: 10
 
 # gpu
 visible_gpus: '0'
 gpu_ranks: '0'
 world_size: 1
 seed: 666
-
-test_all: true
 

@@ -1,9 +1,9 @@
 task: ext
 mode: validate
 
-bert_data_path: ./vietnews_bert_data_shards/vietnews.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
+bert_data_path: ./multi_news_bert_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -54,7 +54,7 @@ beam_size: 5
 min_length: 5
 max_length: 15
 max_tgt_len: 200 
-ext_predict_nsents: 3
+ext_predict_nsents: 10
 
 # gpu
 visible_gpus: '0'

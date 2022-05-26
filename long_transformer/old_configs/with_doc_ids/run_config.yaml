@@ -1,9 +1,9 @@
 task: ext
-mode: validate
+mode: train
 
-bert_data_path: ./vietnews_bert_data_shards/vietnews.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
+bert_data_path: ./multi_news_bert_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -32,7 +32,7 @@ param_init: 0
 param_init_glorot: True
 ## optimizer
 optim: adam
-lr: 1.0e-4
+lr: 2.0e-3
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000
@@ -54,7 +54,7 @@ beam_size: 5
 min_length: 5
 max_length: 15
 max_tgt_len: 200 
-ext_predict_nsents: 3
+ext_predict_nsents: 10
 
 # gpu
 visible_gpus: '0'
@@ -62,5 +62,5 @@ gpu_ranks: '0'
 world_size: 1
 seed: 666
 
-test_all: true
 
+test_all: true

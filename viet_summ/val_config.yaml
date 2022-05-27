@@ -54,7 +54,7 @@ beam_size: 5
 min_length: 5
 max_length: 15
 max_tgt_len: 200 
-ext_predict_nsents: 3
+ext_predict_nsents: 4
 
 # gpu
 visible_gpus: '0'

@@ -1,9 +1,9 @@
 task: ext
 mode: train
 
-bert_data_path: ./multi_news_bert_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext
+bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml

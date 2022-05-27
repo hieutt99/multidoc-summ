@@ -30,7 +30,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
     def __init__(self, args, **kwargs):
         super(LEDBasicSentenceClassificationModel, self).__init__(**kwargs)
 
-        self.led_model = LEDModel("allenai/led-base-16384")
+        self.led_model = LEDModel.from_pretrained(args.bert_model)
         
         self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
 
@@ -40,9 +40,12 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
 
     def forward(self, src, segs, docs, clss, mask_src, mask_cls):
-        top_vec, _ = self.led_model(input_ids=src,
+        led_outputs = self.led_model(input_ids=src,
                             attention_mask=mask_src,
-                            token_type_ids=segs, return_dict=False)
+                            # token_type_ids=segs, 
+                            global_attention_mask=torch.zeros_like(mask_src),
+                            return_dict=False)
+        top_vec = led_outputs[0]
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float() 
@@ -53,5 +56,6 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         sents_vec = sents_vec + pos_emb
 
         sent_scores = self.classifer(sents_vec)
+        sent_scores = self.sigmoid(sent_scores)
         sent_scores = sent_scores.squeeze(-1) * mask_cls.float()
         return sent_scores, mask_cls

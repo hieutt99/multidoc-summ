@@ -9,7 +9,7 @@ norm_first: True
 num_encoder_blocks: 2
 layer_norm_eps: 1.0e-6
 d_ff: 2048
-max_position_embeddings: 2000
+max_position_embeddings: 1024
 
 # bert_model: bert-base-cased
 bert_model: allenai/led-base-16384

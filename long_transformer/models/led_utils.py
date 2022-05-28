@@ -21,7 +21,7 @@ class LEDClassificationHead(nn.Module):
     def forward(self, hidden_states: torch.Tensor):
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.dense(hidden_states)
-        # hidden_states = torch.tanh(hidden_states)
+        hidden_states = torch.tanh(hidden_states)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.out_proj(hidden_states)
         return hidden_states

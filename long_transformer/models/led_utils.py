@@ -61,6 +61,6 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         # sents_vec = sents_vec + pos_emb
 
         sent_scores = self.classifer(sents_vec)
-        # sent_scores = self.sigmoid(sent_scores)
+        sent_scores = self.sigmoid(sent_scores)
         sent_scores = sent_scores.squeeze(-1) * mask_cls.float()
         return sent_scores, mask_cls

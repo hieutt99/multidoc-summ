@@ -36,6 +36,11 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
         self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
 
+        self.led_model._init_weights(self.classifer.dense)
+        self.led_model._init_weights(self.classifer.out_proj)
+        # self.classifier = nn.Linear(args.d_model, 1)
+        # self.dropout = nn.Dropout(args.dropout)
+
         self.sigmoid = nn.Sigmoid()
 
 
@@ -50,12 +55,12 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float() 
 
-        # with cosine positional
-        pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
-        sents_vec = sents_vec * mask_cls[:, :, None].float()
-        sents_vec = sents_vec + pos_emb
+        # # with cosine positional
+        # pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
+        # sents_vec = sents_vec * mask_cls[:, :, None].float()
+        # sents_vec = sents_vec + pos_emb
 
         sent_scores = self.classifer(sents_vec)
-        sent_scores = self.sigmoid(sent_scores)
+        # sent_scores = self.sigmoid(sent_scores)
         sent_scores = sent_scores.squeeze(-1) * mask_cls.float()
         return sent_scores, mask_cls

@@ -31,6 +31,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         super(LEDBasicSentenceClassificationModel, self).__init__(**kwargs)
 
         self.led_model = LEDModel.from_pretrained(args.bert_model)
+        self.led_model.train()
         
         self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
 
@@ -44,11 +45,16 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         self.sigmoid = nn.Sigmoid()
 
 
-    def forward(self, src, segs, docs, clss, mask_src, mask_cls):
+    def forward(self, src, segs, glob_mask, clss, mask_src, mask_cls):
+        # global attention on <s>
+        temp = torch.zeros(segs.size()).to(src.get_device())
+        for i in clss.unsqueeze(0):
+            temp[0, i] = 1
+        
         led_outputs = self.led_model(input_ids=src,
                             attention_mask=mask_src,
                             # token_type_ids=segs, 
-                            global_attention_mask=torch.zeros_like(mask_src),
+                            global_attention_mask=glob_mask,
                             return_dict=False)
         top_vec = led_outputs[0]
 

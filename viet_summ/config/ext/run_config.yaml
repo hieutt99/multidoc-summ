@@ -1,4 +1,4 @@
-task: abs
+task: ext
 mode: train
 
 bert_data_path: ./vietnews_bert_data_shards/vietnews.bert_data

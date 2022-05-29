@@ -37,7 +37,8 @@ class BasicTransformerSentenceGeneration(nn.Module):
         top_vec, _ = self.bert(src, attention_mask=mask_src, 
                                 token_type_ids=segs, doc_type_ids=docs)
         
-        return 
+        output = self.transformer_model(top_vec, tgt, mask_src, mask_tgt, )
+        return output
 
 class BasicTransformerSentenceClassification(nn.Module):
     def __init__(self, args, **kwargs):

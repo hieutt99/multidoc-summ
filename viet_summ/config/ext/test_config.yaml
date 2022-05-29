@@ -1,9 +1,9 @@
-task: abs
-mode: train
+task: ext
+mode: test
 
-bert_data_path: ./vietnews_bert_data_shards/vietnews.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
+bert_data_path: ./multi_news_bert_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -11,7 +11,7 @@ checkpoint: null
 
 
 train_from: null
-test_from: null
+test_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/model_step_20000.pt
 log_file: ./logs/model_log
 
 block_trigram: True
@@ -22,8 +22,8 @@ report_rouge: True
 batch_size: 3000
 test_batch_size: 200
 
-max_pos: 512
-max_position_embeddings: 512
+max_pos: 1000
+max_position_embeddings: 1000
 use_interval: True
 
 # hyperparameters
@@ -32,7 +32,7 @@ param_init: 0
 param_init_glorot: True
 ## optimizer
 optim: adam
-lr: 2.0e-3
+lr: 1.0e-4
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000
@@ -62,5 +62,3 @@ gpu_ranks: '0'
 world_size: 1
 seed: 666
 
-
-test_all: true

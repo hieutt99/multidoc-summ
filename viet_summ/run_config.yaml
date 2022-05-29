@@ -2,8 +2,8 @@ task: abs
 mode: train
 
 bert_data_path: ./vietnews_bert_data_shards/vietnews.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models/
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models_abs/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models_abs/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml

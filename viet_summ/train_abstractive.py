@@ -189,6 +189,7 @@ def validate(args, device_id, pt, step):
                                         shuffle=False, is_test=False)
 
     tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = len(tokenizer.vocab_size)
     symbols = {'BOS': tokenizer.vocab[SpecialTokens.tgt_bos], 'EOS': tokenizer.vocab[SpecialTokens.tgt_eos],
                'PAD': tokenizer.vocab[SpecialTokens.pad_token]}
 
@@ -219,6 +220,7 @@ def test_abs(args, device_id, pt, step):
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
     tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = len(tokenizer.vocab_size)
     symbols = {'BOS': tokenizer.vocab[SpecialTokens.tgt_bos], 'EOS': tokenizer.vocab[SpecialTokens.tgt_eos],
                'PAD': tokenizer.vocab[SpecialTokens.pad_token]}
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
@@ -245,6 +247,7 @@ def test_text_abs(args, device_id, pt, step):
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
     tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = len(tokenizer.vocab_size)
     symbols = {'BOS': tokenizer.vocab[SpecialTokens.tgt_bos], 'EOS': tokenizer.vocab[SpecialTokens.tgt_eos],
                'PAD': tokenizer.vocab[SpecialTokens.pad_token]}
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
@@ -320,6 +323,7 @@ def train_abs_single(args, device_id):
     logger.info(model)
 
     tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = len(tokenizer.vocab_size)
     symbols = {'BOS': tokenizer.vocab[SpecialTokens.tgt_bos], 'EOS': tokenizer.vocab[SpecialTokens.tgt_eos],
                'PAD': tokenizer.vocab[SpecialTokens.pad_token]}
 

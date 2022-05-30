@@ -40,7 +40,7 @@ class BasicTransformerSentenceGeneration(nn.Module):
         )
 
         self.generator = get_generator(args.vocab_size, args.d_model)
-
+        self.vocab_size = args.vocab_size
         self.args = args
 
     def forward(self, src, tgt, segs, docs, mask_src, mask_tgt):

@@ -1,6 +1,7 @@
 
 
-model_name: vi_basic_ext
+model_name: vi_basic_abs
+vocab_size: 64000
 freeze_bert: False
 d_model: 768
 num_heads: 8

@@ -6,5 +6,6 @@ MODEL_MAP = {
     'basic_abs': BasicTransformerSentenceGeneration,
 
     'vi_basic_ext': BasicViTransformerSentenceClassification,
+    'vi_basic_abs': BasicViTransformerSentenceGeneration,
 }
 

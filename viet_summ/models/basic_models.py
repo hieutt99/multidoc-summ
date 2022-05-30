@@ -8,6 +8,15 @@ from .modules.transformer_base import (BasicTransformerModel,
 from .bert import PositionalEncoding
 from .bert_utils import build_bert
 
+
+def get_generator(vocab_size, dec_hidden_size):
+    gen_func = nn.LogSoftmax(dim=-1)
+    generator = nn.Sequential(
+        nn.Linear(dec_hidden_size, vocab_size),
+        gen_func
+    )
+    generator
+
 class BasicTransformerSentenceGeneration(nn.Module):
     def __init__(self, args, **kwargs):
         super(BasicTransformerSentenceGeneration, self).__init__()
@@ -30,6 +39,7 @@ class BasicTransformerSentenceGeneration(nn.Module):
             layer_norm_eps=args.layer_norm_eps
         )
 
+        self.generator = get_generator(args.vocab_size, args.d_model)
 
         self.args = args
 

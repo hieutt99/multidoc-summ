@@ -3,10 +3,23 @@ import unicodedata
 from io import open
 from . import __version__, logging
 from tokenizers import BertWordPieceTokenizer
+from transformers import AutoTokenizer
 
 
 
 logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
+
+
+
+TOKENIZER_MAP = {
+    "basic_ext": "bert-base-cased", 
+    "basic_abs": "bert-base-cased", 
+    "vi_basic_ext": "vinai/phobert-base",
+    "vi_basic_abs": "vinai/phobert-base"
+}
+
+def build_tokenizer(args):
+    return AutoTokenizer.from_pretrained(TOKENIZER_MAP[args.model_config.model_name], cache_dir=args.temp_dir)
 
 
 def load_vocab(vocab_file):

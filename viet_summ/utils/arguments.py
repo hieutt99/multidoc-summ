@@ -8,6 +8,7 @@ import os
 @dataclass(init=True, repr=True)
 class ModelConfig:
     model_name: str
+    vocab_size: int
     freeze_bert: bool
     d_model: int
     num_heads: int

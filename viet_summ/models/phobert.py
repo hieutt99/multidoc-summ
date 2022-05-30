@@ -77,3 +77,7 @@ class BasicViTransformerSentenceClassification(nn.Module):
         sent_scores = self.sigmoid(self.wo(x))
         sent_scores = sent_scores.squeeze(-1) * mask_cls.float()
         return sent_scores, mask_cls
+
+class BasicViTransformerSentenceGeneration(nn.Module):
+    def __init__(self, args, **kwargs):
+        super(BasicViTransformerSentenceGeneration, self).__init__()

@@ -11,7 +11,7 @@ from re import L
 from numpy import load
 from models.model_utils import build_model
 from others.logging import init_logger
-# from train_abstractive import validate_abs, train_abs, baseline, test_abs, test_text_abs
+from train_abstractive import validate_abs, train_abs, baseline, test_abs, test_text_abs
 from train_extractive import train_ext, validate_ext, test_ext
 from utils.arguments import load_config
 from utils.arguments import RunConfig, ModelConfig
@@ -44,29 +44,28 @@ if __name__ == '__main__':
     device_id = 0 if device == "cuda" else -1
 
     if (run_config.task == 'abs'):
-        pass 
-        # if (run_config.mode == 'train'):
-        #     train_abs(run_config, device_id)
-        # elif (run_config.mode == 'validate'):
-        #     validate_abs(run_config, device_id)
-        # elif (run_config.mode == 'lead'):
-        #     baseline(run_config, cal_lead=True)
-        # elif (run_config.mode == 'oracle'):
-        #     baseline(run_config, cal_oracle=True)
-        # if (run_config.mode == 'test'):
-        #     cp = run_config.test_from
-        #     try:
-        #         step = int(cp.split('.')[-2].split('_')[-1])
-        #     except:
-        #         step = 0
-        #     test_abs(run_config, device_id, cp, step)
-        # elif (run_config.mode == 'test_text'):
-        #     cp = run_config.test_from
-        #     try:
-        #         step = int(cp.split('.')[-2].split('_')[-1])
-        #     except:
-        #         step = 0
-        #         test_text_abs(run_config, device_id, cp, step)
+        if (run_config.mode == 'train'):
+            train_abs(run_config, device_id)
+        elif (run_config.mode == 'validate'):
+            validate_abs(run_config, device_id)
+        elif (run_config.mode == 'lead'):
+            baseline(run_config, cal_lead=True)
+        elif (run_config.mode == 'oracle'):
+            baseline(run_config, cal_oracle=True)
+        if (run_config.mode == 'test'):
+            cp = run_config.test_from
+            try:
+                step = int(cp.split('.')[-2].split('_')[-1])
+            except:
+                step = 0
+            test_abs(run_config, device_id, cp, step)
+        elif (run_config.mode == 'test_text'):
+            cp = run_config.test_from
+            try:
+                step = int(cp.split('.')[-2].split('_')[-1])
+            except:
+                step = 0
+                test_text_abs(run_config, device_id, cp, step)
 
     elif (run_config.task == 'ext'):
         if (run_config.mode == 'train'):

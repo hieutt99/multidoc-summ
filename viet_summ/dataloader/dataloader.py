@@ -275,7 +275,6 @@ class DataIterator(object):
         while True:
             self.batches = self.create_batches()
             for idx, minibatch in enumerate(self.batches):
-                print(len(minibatch))
                 # fast-forward if loaded from state
                 if self._iterations_this_epoch > idx:
                     continue

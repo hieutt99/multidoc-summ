@@ -126,5 +126,5 @@ class BasicViTransformerSentenceGeneration(nn.Module):
                             token_type_ids=segs, return_dict=False)
         
         dec_state = self.decoder.init_decoder_state(src, top_vec)
-        decoder_outputs, state = self.decoder(tgt, top_vec, dec_state)
+        decoder_outputs, state = self.decoder(tgt[:, :-1], top_vec, dec_state)
         return decoder_outputs, None

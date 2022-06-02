@@ -77,7 +77,7 @@ class RunConfig:
     beta2: float
     warmup_steps: int
     warmup_steps_bert: int
-    warmup_step_dec: int
+    warmup_steps_dec: int
     max_grad_norm: int
 
     save_checkpoint_steps: int
@@ -101,6 +101,7 @@ class RunConfig:
     seed: int
 
     lr_bert: float
+    lr_dec: float
 
     test_all: bool = False
 

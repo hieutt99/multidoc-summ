@@ -260,8 +260,9 @@ class DataIterator(object):
                 p_batch = sorted(p_batch, key=lambda x: len(x[1]))
             else:
                 p_batch = sorted(buffer, key=lambda x: len(x[2]))
-
+            print(p_batch)
             p_batch = self.batch(p_batch, self.batch_size)
+            print(p_batch)
 
 
             p_batch = list(p_batch)
@@ -276,6 +277,7 @@ class DataIterator(object):
         while True:
             self.batches = self.create_batches()
             for idx, minibatch in enumerate(self.batches):
+                print(len(minibatch))
                 # fast-forward if loaded from state
                 if self._iterations_this_epoch > idx:
                     continue

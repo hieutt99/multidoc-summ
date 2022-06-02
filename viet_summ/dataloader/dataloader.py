@@ -210,7 +210,6 @@ class DataIterator(object):
         # src_txt = src_txt[:max_sent_id]
 
 
-
         if(is_test):
             return src, tgt, segs, clss, src_sent_labels, src_txt, tgt_txt
         else:
@@ -276,6 +275,7 @@ class DataIterator(object):
         while True:
             self.batches = self.create_batches()
             for idx, minibatch in enumerate(self.batches):
+                print(len(minibatch))
                 # fast-forward if loaded from state
                 if self._iterations_this_epoch > idx:
                     continue

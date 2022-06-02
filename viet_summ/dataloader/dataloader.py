@@ -282,7 +282,6 @@ class DataIterator(object):
                 self.iterations += 1
                 self._iterations_this_epoch += 1
                 batch = Batch(minibatch, self.device, self.is_test)
-
                 yield batch
             return
 

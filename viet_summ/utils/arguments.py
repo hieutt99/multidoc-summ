@@ -15,8 +15,15 @@ class ModelConfig:
     dropout: float 
     norm_first: bool
     num_encoder_blocks: int
+    num_decoder_blocks: int
     layer_norm_eps: float
     d_ff: int
+
+    dec_layers: int
+    dec_hidden_size: int
+    dec_heads: int
+    dec_ff_size: int
+    dec_dropout: float
     # bert_config: BertConfig
     max_position_embeddings: int
     bert_model: str = 'bert-base-cased'
@@ -93,7 +100,12 @@ class RunConfig:
     world_size: int
     seed: int
 
+    lr_bert: float
+
     test_all: bool = False
+
+    load_from_extractive: str = ""
+    sep_optim: bool = False
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():

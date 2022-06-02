@@ -181,6 +181,12 @@ def validate(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+               'PAD': vocab[SpecialTokens.pad_token]}
+
     model = build_model(args.model_config, device, checkpoint)
     model.eval()
 
@@ -188,10 +194,6 @@ def validate(args, device_id, pt, step):
                                         args.batch_size, device,
                                         shuffle=False, is_test=False)
 
-    tokenizer = build_tokenizer(args)
-    args.model_config.vocab_size = len(tokenizer.vocab_size)
-    symbols = {'BOS': tokenizer.vocab[SpecialTokens.tgt_bos], 'EOS': tokenizer.vocab[SpecialTokens.tgt_eos],
-               'PAD': tokenizer.vocab[SpecialTokens.pad_token]}
 
     valid_loss = abs_loss(model.generator, symbols, model.vocab_size, train=False, device=device)
 
@@ -213,16 +215,19 @@ def test_abs(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+               'PAD': vocab[SpecialTokens.pad_token]}
+
     model = build_model(args.model_config, device, checkpoint)
     model.eval()
 
     test_iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    tokenizer = build_tokenizer(args)
-    args.model_config.vocab_size = len(tokenizer.vocab_size)
-    symbols = {'BOS': tokenizer.vocab[SpecialTokens.tgt_bos], 'EOS': tokenizer.vocab[SpecialTokens.tgt_eos],
-               'PAD': tokenizer.vocab[SpecialTokens.pad_token]}
+
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
     predictor.translate(test_iter, step)
 
@@ -240,16 +245,19 @@ def test_text_abs(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+               'PAD': vocab[SpecialTokens.pad_token]}
+
     model = build_model(args.model_config, device, checkpoint)
     model.eval()
 
     test_iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    tokenizer = build_tokenizer(args)
-    args.model_config.vocab_size = len(tokenizer.vocab_size)
-    symbols = {'BOS': tokenizer.vocab[SpecialTokens.tgt_bos], 'EOS': tokenizer.vocab[SpecialTokens.tgt_eos],
-               'PAD': tokenizer.vocab[SpecialTokens.pad_token]}
+
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
     predictor.translate(test_iter, step)
 
@@ -312,6 +320,12 @@ def train_abs_single(args, device_id):
         return dataloader.Dataloader(args, load_dataset(args, 'train', shuffle=True), args.batch_size, device,
                                       shuffle=True, is_test=False)
 
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+               'PAD': vocab[SpecialTokens.pad_token]}
+
     model = build_model(args.model_config, device, checkpoint)
     if (args.sep_optim):
         optim_bert = train_builder.build_optim_bert(args, model, checkpoint)
@@ -321,11 +335,6 @@ def train_abs_single(args, device_id):
         optim = [train_builder.build_optim(args, model, checkpoint)]
 
     logger.info(model)
-
-    tokenizer = build_tokenizer(args)
-    args.model_config.vocab_size = len(tokenizer.vocab_size)
-    symbols = {'BOS': tokenizer.vocab[SpecialTokens.tgt_bos], 'EOS': tokenizer.vocab[SpecialTokens.tgt_eos],
-               'PAD': tokenizer.vocab[SpecialTokens.pad_token]}
 
     train_loss = abs_loss(model.generator, symbols, model.vocab_size, device, train=True,
                           label_smoothing=args.label_smoothing)

@@ -1,2 +1,2 @@
-from .tokenizer import (BertTokenizer)
-from .tokenizer_base import WordpieceTokenizer
+# from .tokenizer import (BertTokenizer)
+# from .tokenizer_base import WordpieceTokenizer

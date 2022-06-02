@@ -33,6 +33,7 @@ param_init_glorot: True
 ## optimizer
 optim: adam
 lr: 2.0e-3
+lr_bert: 2.0e-3
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000
@@ -64,3 +65,6 @@ seed: 666
 
 
 test_all: true
+
+load_from_extractive: ""
+sep_optim: False

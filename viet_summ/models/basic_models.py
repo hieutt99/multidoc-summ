@@ -1,13 +1,12 @@
 from distutils.command.build import build
 import torch 
 import torch.nn as nn 
-from .modules.transformer_base import (BasicTransformerModel, 
+from .modules.transformer_base import (
                                         BasicTransformerEncoder, 
                                         BasicTransformerEncoderBlock, 
                                         PositionwiseFeedForward,)
 from .bert import PositionalEncoding
 from .bert_utils import build_bert
-
 
 def get_generator(vocab_size, dec_hidden_size):
     gen_func = nn.LogSoftmax(dim=-1)
@@ -15,40 +14,8 @@ def get_generator(vocab_size, dec_hidden_size):
         nn.Linear(dec_hidden_size, vocab_size),
         gen_func
     )
-    generator
+    return generator
 
-class BasicTransformerSentenceGeneration(nn.Module):
-    def __init__(self, args, **kwargs):
-        super(BasicTransformerSentenceGeneration, self).__init__()
-        
-        self.bert = build_bert(args.bert_config) 
-        if args.freeze_bert:
-            self.bert.eval()
-        else: 
-            self.bert.train()
-
-        self.transformer_model = BasicTransformerModel(
-            d_model=args.d_model, 
-            num_heads=args.num_heads, 
-            num_encoder_blocks=args.num_encoder_blocks,
-            num_decoder_blocks=args.num_decoder_blocks, 
-            dim_ff=args.dim_ff,
-            dropout=args.dropout,
-            batch_first=args.batch_first, 
-            norm_first=args.norm_first, 
-            layer_norm_eps=args.layer_norm_eps
-        )
-
-        self.generator = get_generator(args.vocab_size, args.d_model)
-        self.vocab_size = args.vocab_size
-        self.args = args
-
-    def forward(self, src, tgt, segs, docs, mask_src, mask_tgt):
-        top_vec, _ = self.bert(src, attention_mask=mask_src, 
-                                token_type_ids=segs, doc_type_ids=docs)
-        
-        output = self.transformer_model(top_vec, tgt, mask_src, mask_tgt, )
-        return output
 
 class BasicTransformerSentenceClassification(nn.Module):
     def __init__(self, args, **kwargs):

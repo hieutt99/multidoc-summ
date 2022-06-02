@@ -1,12 +1,22 @@
 from distutils.command.build import build
 import torch 
 import torch.nn as nn 
-from .modules.transformer_base import (BasicTransformerModel, 
+from .modules.transformer_base import (
                                         BasicTransformerEncoder, 
                                         BasicTransformerEncoderBlock, 
-                                        PositionwiseFeedForward,)
+                                        PositionwiseFeedForward,
+                                        TransformerDecoder,)
 from .bert import PositionalEncoding
 from .bert_utils import build_bert
+import copy
+
+def get_generator(vocab_size, dec_hidden_size):
+    gen_func = nn.LogSoftmax(dim=-1)
+    generator = nn.Sequential(
+        nn.Linear(dec_hidden_size, vocab_size),
+        gen_func
+    )
+    return generator
 
 
 class BasicViTransformerSentenceClassification(nn.Module):
@@ -81,3 +91,40 @@ class BasicViTransformerSentenceClassification(nn.Module):
 class BasicViTransformerSentenceGeneration(nn.Module):
     def __init__(self, args, **kwargs):
         super(BasicViTransformerSentenceGeneration, self).__init__()
+        
+        self.bert = build_bert(args.bert_model) 
+        if args.freeze_bert:
+            self.bert.eval()
+        else: 
+            self.bert.train()
+        self.bert.embeddings.register_buffer("position_ids", torch.arange(args.max_position_embeddings).expand((1, -1)))
+            
+        if(args.max_position_embeddings>258):
+
+            self.bert.embeddings.position_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
+
+        self.bert.embeddings.token_type_embeddings = nn.Embedding(2, self.bert.config.hidden_size)
+
+        self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
+        self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
+
+        tgt_embeddings = nn.Embedding(args.vocab_size, args.d_model, padding_idx=0)
+        tgt_embeddings.weight = copy.deepcopy(self.bert.embeddings.word_embeddings.weight)
+
+        self.decoder = TransformerDecoder(
+            args.dec_layers,
+            args.dec_hidden_size, heads=args.dec_heads,
+            d_ff=args.dec_ff_size, dropout=args.dec_dropout, embeddings=tgt_embeddings)
+
+        self.generator = get_generator(args.vocab_size, args.d_model)
+        self.vocab_size = args.vocab_size
+        self.args = args
+
+    def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls):
+        top_vec, _ = self.bert(input_ids=src,
+                            attention_mask=mask_src,
+                            token_type_ids=segs, return_dict=False)
+        
+        dec_state = self.decoder.init_decoder_state(src, top_vec)
+        decoder_outputs, state = self.decoder(tgt, top_vec, dec_state)
+        return decoder_outputs, None

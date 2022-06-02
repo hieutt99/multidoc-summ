@@ -1,5 +1,6 @@
 import torch 
 from .model_map import MODEL_MAP
+import torch.nn as nn
 
 def build_model(config, device, checkpoint=None):
     model_class = MODEL_MAP[config.model_name]

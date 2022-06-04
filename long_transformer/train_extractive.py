@@ -194,6 +194,44 @@ def test_ext(args, device_id, pt, step):
     trainer = build_trainer(args, device_id, model, None)
     trainer.test(test_iter, step)
 
+def data_gen(args, device_id, pt, step):
+    device = "cpu" if args.visible_gpus == '-1' else "cuda"
+    if (pt != ''):
+        test_from = pt
+    else:
+        test_from = args.test_from
+    logger.info("Loading checkpoint from %s" % test_from)
+    checkpoint = torch.load(test_from, map_location=lambda storage, loc: storage)
+    opt = checkpoint['opt']
+    args.model_config = ModelConfig(**opt)
+    print(args.model_config)
+
+    model = build_model(args.model_config, device, checkpoint)
+    model.eval()
+
+    temp = args.result_path 
+
+    args.result_path = temp + 'train'
+    _iter = dataloader.Dataloader(args, load_dataset(args, 'train', shuffle=False),
+                                       args.test_batch_size, device,
+                                       shuffle=False, is_test=True)
+    trainer = build_trainer(args, device_id, model, None)
+    trainer.test(_iter, step)
+
+    args.result_path = temp + 'valid'
+    _iter = dataloader.Dataloader(args, load_dataset(args, 'valid', shuffle=False),
+                                       args.test_batch_size, device,
+                                       shuffle=False, is_test=True)
+    trainer = build_trainer(args, device_id, model, None)
+    trainer.test(_iter, step)
+
+    args.result_path = temp + 'test'
+    _iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
+                                       args.test_batch_size, device,
+                                       shuffle=False, is_test=True)
+    trainer = build_trainer(args, device_id, model, None)
+    trainer.test(_iter, step)
+
 def train_ext(args, device_id):
     # if (args.world_size > 1):
     #     train_multi_ext(args)

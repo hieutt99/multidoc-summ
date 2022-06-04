@@ -101,11 +101,11 @@ def abs_batch_size_fn(new, count):
         max_size = 0
         max_n_sents=0
         max_n_tokens=0
-    max_n_sents = max(max_n_sents, len(tgt))
-    max_size = max(max_size, max_n_sents)
+    max_n_tokens = max(max_n_tokens, len(tgt))
+    max_size = max(max_size, max_n_tokens)
     src_elements = count * max_size
-    if (count > 6):
-        return src_elements + 1e3
+    # if (count > 1):
+    #     return src_elements + 1e5
     return src_elements
 
 
@@ -225,6 +225,8 @@ class DataIterator(object):
                 continue
             minibatch.append(ex)
             size_so_far = self.batch_size_fn(ex, len(minibatch))
+            # print(size_so_far)
+            # print(batch_size)
             if size_so_far == batch_size:
                 yield minibatch
                 minibatch, size_so_far = [], 0
@@ -252,7 +254,10 @@ class DataIterator(object):
     def create_batches(self):
         """ Create batches """
         data = self.data()
-        for buffer in self.batch_buffer(data, self.batch_size * 300):
+        scale = 300
+        if self.args.task == 'abs':
+            scale = 0.1
+        for buffer in self.batch_buffer(data, self.batch_size * scale):
 
             if (self.args.task == 'abs'):
                 p_batch = sorted(buffer, key=lambda x: len(x[2]))

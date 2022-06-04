@@ -1,5 +1,5 @@
-task: data_gen
-mode: train
+task: ext
+mode: validate
 
 bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
 model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
@@ -10,8 +10,8 @@ model_config_path: model_config.yaml
 checkpoint: null
 
 
-train_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/model_step_20000.pt
-test_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/model_step_19000.pt
+train_from: null
+test_from: null
 log_file: ./logs/model_log
 
 block_trigram: True
@@ -44,7 +44,7 @@ max_grad_norm: 0
 save_checkpoint_steps: 1000
 accum_count: 5
 report_every: 100
-train_steps: 30000
+train_steps: 20000
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1
@@ -62,5 +62,5 @@ gpu_ranks: '0'
 world_size: 1
 seed: 666
 
-
 test_all: true
+

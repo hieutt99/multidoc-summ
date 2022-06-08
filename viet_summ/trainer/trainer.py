@@ -3,6 +3,7 @@ import os
 import numpy as np
 import torch
 from tensorboardX import SummaryWriter
+from attr import asdict
 
 import distributed
 from trainer.reporter import ReportMgr, Statistics

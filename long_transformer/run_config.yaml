@@ -1,16 +1,16 @@
-task: ext
+task: abs
 mode: train
 
-bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
+bert_data_path: ./abs_bert_data_shards/multi_news_abs.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_led/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_led/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
 checkpoint: null
 
 
-train_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/model_step_20000.pt
+train_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_led/model_step_20000.pt
 test_from: null
 log_file: ./logs/model_log
 
@@ -19,11 +19,11 @@ report_rouge: True
 
 
 # general
-batch_size: 1500
+batch_size: 150
 test_batch_size: 200
 
-max_pos: 1024
-max_position_embeddings: 1024
+max_pos: 512
+max_position_embeddings: 512
 use_interval: True
 
 # hyperparameters

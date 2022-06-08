@@ -1,6 +1,6 @@
 
 
-model_name: led_ext
+model_name: basic_abs
 freeze_bert: False
 d_model: 768
 num_heads: 8
@@ -9,10 +9,10 @@ norm_first: True
 num_encoder_blocks: 2
 layer_norm_eps: 1.0e-6
 d_ff: 2048
-max_position_embeddings: 1024
+max_position_embeddings: 512
 
-# bert_model: bert-base-cased
-bert_model: allenai/led-base-16384
+bert_model: bert-base-cased
+# bert_model: allenai/led-base-16384
 type_doc_size: 2
 
 # bert_config:

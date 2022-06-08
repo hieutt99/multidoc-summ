@@ -69,7 +69,7 @@ def build_optim_bert(args, model, checkpoint):
             decay_method='noam',
             warmup_steps=args.warmup_steps_bert)
 
-    params = [(n, p) for n, p in list(model.named_parameters()) if n.startswith('bert.model')]
+    params = [(n, p) for n, p in list(model.named_parameters()) if n.startswith('bert')]
     optim.set_parameters(params)
 
 
@@ -100,7 +100,7 @@ def build_optim_dec(args, model, checkpoint):
             decay_method='noam',
             warmup_steps=args.warmup_steps_dec)
 
-    params = [(n, p) for n, p in list(model.named_parameters()) if not n.startswith('bert.model')]
+    params = [(n, p) for n, p in list(model.named_parameters()) if not n.startswith('bert')]
     optim.set_parameters(params)
 
 

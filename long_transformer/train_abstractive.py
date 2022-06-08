@@ -12,14 +12,15 @@ import signal
 import time
 
 import torch
-from pytorch_transformers import BertTokenizer
+from tokenizer.utils import build_tokenizer
+from tokenizer.special_tokens import SpecialTokens
 
 import distributed
-from dataloader import data_loader
+from dataloader import dataloader
+from models.model_utils import build_model
 from trainer import train_builder
 from dataloader.dataloader import load_dataset
 from trainer.loss import abs_loss
-from trainer.train_builder import AbsSummarizer
 from trainer.predictor import build_predictor
 from trainer.trainer import build_trainer
 from others.logging import logger, init_logger
@@ -179,16 +180,18 @@ def validate(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
-    model = AbsSummarizer(args, device, checkpoint)
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+               'PAD': vocab[SpecialTokens.pad_token]}
+
+    model = build_model(args.model_config, device, checkpoint)
     model.eval()
 
-    valid_iter = data_loader.Dataloader(args, load_dataset(args, 'valid', shuffle=False),
+    valid_iter = dataloader.Dataloader(args, load_dataset(args, 'valid', shuffle=False),
                                         args.batch_size, device,
                                         shuffle=False, is_test=False)
-
-    tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=True, cache_dir=args.temp_dir)
-    symbols = {'BOS': tokenizer.vocab['[unused1]'], 'EOS': tokenizer.vocab['[unused2]'],
-               'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused3]']}
 
     valid_loss = abs_loss(model.generator, symbols, model.vocab_size, train=False, device=device)
 
@@ -210,15 +213,19 @@ def test_abs(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
-    model = AbsSummarizer(args, device, checkpoint)
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+               'PAD': vocab[SpecialTokens.pad_token]}
+
+    model = build_model(args.model_config, device, checkpoint)
     model.eval()
 
-    test_iter = data_loader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
+    test_iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=True, cache_dir=args.temp_dir)
-    symbols = {'BOS': tokenizer.vocab['[unused1]'], 'EOS': tokenizer.vocab['[unused2]'],
-               'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused3]']}
+
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
     predictor.translate(test_iter, step)
 
@@ -236,21 +243,25 @@ def test_text_abs(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
-    model = AbsSummarizer(args, device, checkpoint)
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+               'PAD': vocab[SpecialTokens.pad_token]}
+
+    model = build_model(args.model_config, device, checkpoint)
     model.eval()
 
-    test_iter = data_loader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
+    test_iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
                                        args.test_batch_size, device,
                                        shuffle=False, is_test=True)
-    tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=True, cache_dir=args.temp_dir)
-    symbols = {'BOS': tokenizer.vocab['[unused1]'], 'EOS': tokenizer.vocab['[unused2]'],
-               'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused3]']}
+
     predictor = build_predictor(args, tokenizer, symbols, model, logger)
     predictor.translate(test_iter, step)
 
 
 def baseline(args, cal_lead=False, cal_oracle=False):
-    test_iter = data_loader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
+    test_iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
                                        args.batch_size, 'cpu',
                                        shuffle=False, is_test=True)
 
@@ -304,10 +315,16 @@ def train_abs_single(args, device_id):
     torch.backends.cudnn.deterministic = True
 
     def train_iter_fct():
-        return data_loader.Dataloader(args, load_dataset(args, 'train', shuffle=True), args.batch_size, device,
+        return dataloader.Dataloader(args, load_dataset(args, 'train', shuffle=True), args.batch_size, device,
                                       shuffle=True, is_test=False)
 
-    model = AbsSummarizer(args, device, checkpoint, bert_from_extractive)
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+               'PAD': vocab[SpecialTokens.pad_token]}
+
+    model = build_model(args.model_config, device, checkpoint)
     if (args.sep_optim):
         optim_bert = train_builder.build_optim_bert(args, model, checkpoint)
         optim_dec = train_builder.build_optim_dec(args, model, checkpoint)
@@ -316,10 +333,6 @@ def train_abs_single(args, device_id):
         optim = [train_builder.build_optim(args, model, checkpoint)]
 
     logger.info(model)
-
-    tokenizer = BertTokenizer.from_pretrained('bert-base-cased', do_lower_case=True, cache_dir=args.temp_dir)
-    symbols = {'BOS': tokenizer.vocab['[unused1]'], 'EOS': tokenizer.vocab['[unused2]'],
-               'PAD': tokenizer.vocab['[PAD]'], 'EOQ': tokenizer.vocab['[unused3]']}
 
     train_loss = abs_loss(model.generator, symbols, model.vocab_size, device, train=True,
                           label_smoothing=args.label_smoothing)

@@ -63,4 +63,7 @@ world_size: 1
 seed: 666
 
 test_all: true
+load_from_extractive: ""
+sep_optim: True
 
+test_start_from: -1

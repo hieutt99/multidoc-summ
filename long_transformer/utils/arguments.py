@@ -8,14 +8,22 @@ import os
 @dataclass(init=True, repr=True)
 class ModelConfig:
     model_name: str
+    vocab_size: int
     freeze_bert: bool
     d_model: int
     num_heads: int
     dropout: float 
     norm_first: bool
     num_encoder_blocks: int
+    num_decoder_blocks: int
     layer_norm_eps: float
     d_ff: int
+
+    dec_layers: int
+    dec_hidden_size: int
+    dec_heads: int
+    dec_ff_size: int
+    dec_dropout: float
     # bert_config: BertConfig
     max_position_embeddings: int
     bert_model: str = 'bert-base-cased'
@@ -69,7 +77,7 @@ class RunConfig:
     beta2: float
     warmup_steps: int
     warmup_steps_bert: int
-    warmup_step_dec: int
+    warmup_steps_dec: int
     max_grad_norm: int
 
     save_checkpoint_steps: int
@@ -92,7 +100,15 @@ class RunConfig:
     world_size: int
     seed: int
 
+    lr_bert: float
+    lr_dec: float
+
     test_all: bool = False
+
+    load_from_extractive: str = ""
+    sep_optim: bool = False
+
+    test_start_from: int = -1
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():

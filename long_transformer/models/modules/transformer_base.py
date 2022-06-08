@@ -4,6 +4,7 @@ import torch.nn as nn
 from .attention import *
 from .utils import _get_clones
 from .attention import MultiHeadedAttention
+import numpy as np 
 
 
 class PositionalEncoding(nn.Module):

@@ -1,13 +1,13 @@
 import collections
 import unicodedata
 from io import open
-from . import __version__, logging
+from others.logging import logger
 from tokenizers import BertWordPieceTokenizer
 from transformers import AutoTokenizer
 
 
 
-logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
+# logger = logging.get_logger(__name__)  # pylint: disable=invalid-name
 
 TOKENIZER_MAP = {
     "basic_ext": "bert-base-cased", 

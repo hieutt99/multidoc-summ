@@ -333,7 +333,7 @@ class Trainer(object):
         checkpoint = {
             'model': model_state_dict,
             # 'generator': generator_state_dict,
-            'opt': self.args,
+            'opt': asdict(self.args.model_config),
             'optims': self.optims,
         }
         checkpoint_path = os.path.join(self.args.model_path, 'model_step_%d.pt' % step)

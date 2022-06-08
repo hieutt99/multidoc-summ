@@ -107,6 +107,7 @@ class RunConfig:
 
     load_from_extractive: str = ""
     sep_optim: bool = False
+    test_start_from: int = -1
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():

@@ -69,3 +69,4 @@ test_all: true
 
 load_from_extractive: ""
 sep_optim: True
+test_start_from: -1

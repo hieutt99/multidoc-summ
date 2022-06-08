@@ -1,9 +1,9 @@
 task: ext
-mode: validate
+mode: test
 
-bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/length_20_
+bert_data_path: ./multi_news_bert_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -11,7 +11,7 @@ checkpoint: null
 
 
 train_from: null
-test_from: null
+test_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models/model_step_20000.pt
 log_file: ./logs/model_log
 
 block_trigram: True
@@ -19,11 +19,11 @@ report_rouge: True
 
 
 # general
-batch_size: 1500
+batch_size: 3000
 test_batch_size: 200
 
-max_pos: 1024
-max_position_embeddings: 1024
+max_pos: 1000
+max_position_embeddings: 1000
 use_interval: True
 
 # hyperparameters
@@ -32,7 +32,7 @@ param_init: 0
 param_init_glorot: True
 ## optimizer
 optim: adam
-lr: 2.0e-3
+lr: 1.0e-4
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000
@@ -42,7 +42,7 @@ max_grad_norm: 0
 
 # train phase
 save_checkpoint_steps: 1000
-accum_count: 5
+accum_count: 2
 report_every: 100
 train_steps: 20000
 recall_eval: False
@@ -54,13 +54,11 @@ beam_size: 5
 min_length: 5
 max_length: 15
 max_tgt_len: 200 
-ext_predict_nsents: 20
+ext_predict_nsents: 10
 
 # gpu
 visible_gpus: '0'
 gpu_ranks: '0'
 world_size: 1
 seed: 666
-
-test_all: true
 

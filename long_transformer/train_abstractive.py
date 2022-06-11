@@ -320,6 +320,7 @@ def train_abs_single(args, device_id):
 
     tokenizer = build_tokenizer(args)
     args.model_config.vocab_size = tokenizer.vocab_size
+    print(vocab_size)
     vocab = tokenizer.get_vocab()
     symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
                'PAD': vocab[SpecialTokens.pad_token]}

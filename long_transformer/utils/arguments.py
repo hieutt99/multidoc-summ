@@ -1,7 +1,7 @@
 from dataclasses import dataclass, asdict, fields
 from re import S
 from typing import Optional, Type, List
-from models.bert import BertConfig
+# from models.bert import BertConfig
 from utils.utils import load_config_yaml
 import os 
 
@@ -31,10 +31,11 @@ class ModelConfig:
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():
-            if k == 'bert_config':
-                self.bert_config = BertConfig(**v) if type(v) == dict else v
-            else:
-                setattr(self, k, v)
+            # if k == 'bert_config':
+            #     self.bert_config = BertConfig(**v) if type(v) == dict else v
+            # else:
+            #     setattr(self, k, v)
+            setattr(self, k, v)
 
 
 @dataclass(init=True, repr=True)

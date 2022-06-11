@@ -233,15 +233,18 @@ class Translator(object):
         src = batch.src
         segs = batch.segs
         mask_src = batch.mask_src
+        print(src.size())
 
-        src_features = self.model.bert(src, segs, mask_src)
+        src_features, _ = self.model.bert(input_ids=src, token_type_ids=segs, 
+                                    attention_mask=mask_src, return_dict=False)
         dec_states = self.model.decoder.init_decoder_state(src, src_features, with_cache=True)
         device = src_features.device
+        print(src_features.size())
 
         # Tile states and memory beam_size times.
         dec_states.map_batch_fn(
             lambda state, dim: tile(state, beam_size, dim=dim))
-        src_features = tile(src_features, beam_size, dim=0)
+        # src_features = tile(src_features, beam_size, dim=0)
         batch_offset = torch.arange(
             batch_size, dtype=torch.long, device=device)
         beam_offset = torch.arange(
@@ -271,10 +274,15 @@ class Translator(object):
         results["batch"] = batch
 
         for step in range(max_length):
+            print(src_features.size())
+            print(alive_seq.size())
             decoder_input = alive_seq[:, -1].view(1, -1)
+            print(decoder_input.size())
+            print("vao day")
 
             # Decoder forward.
-            decoder_input = decoder_input.transpose(0,1)
+            # decoder_input = decoder_input.transpose(0,1)
+            # print(decoder_input.size())
 
             dec_out, dec_states = self.model.decoder(decoder_input, src_features, dec_states,
                                                      step=step)

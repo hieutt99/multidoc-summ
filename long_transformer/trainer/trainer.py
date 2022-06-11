@@ -9,6 +9,7 @@ import distributed
 from trainer.reporter import ReportMgr, Statistics
 from others.logging import logger
 from others.utils import test_rouge, rouge_results_to_str
+from utils.arguments import ModelConfig
 
 
 def _tally_parameters(model):
@@ -278,8 +279,8 @@ class Trainer(object):
                     return True
             return False
 
-        if (not cal_lead and not cal_oracle):
-            self.model.eval()
+        # if (not cal_lead and not cal_oracle):
+        self.model.eval()
         stats = Statistics()
 
         can_path = '%s_step%d.candidate'%(self.args.result_path,step)
@@ -331,15 +332,10 @@ class Trainer(object):
 
         model_state_dict = real_model.state_dict()
         # generator_state_dict = real_generator.state_dict()
-        print(self.args.model_config)
-        import dataclasses
-        print(dataclasses.is_dataclass(self.args.model_config))
-        attrs = getattr(type(self.args.model_config), "__attrs_attrs__", None)
-        print(attrs)
         checkpoint = {
             'model': model_state_dict,
             # 'generator': generator_state_dict,
-            'opt': asdict(self.args.model_config),
+            'opt': vars(self.args.model_config),
             'optims': self.optims,
         }
         checkpoint_path = os.path.join(self.args.model_path, 'model_step_%d.pt' % step)

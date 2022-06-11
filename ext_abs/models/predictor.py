@@ -272,6 +272,9 @@ class Translator(object):
 
         for step in range(max_length):
             decoder_input = alive_seq[:, -1].view(1, -1)
+            print(src_features.size())
+            print(alive_seq.size())
+            print(decoder_input.size())
 
             # Decoder forward.
             decoder_input = decoder_input.transpose(0,1)

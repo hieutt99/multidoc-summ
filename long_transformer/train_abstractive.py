@@ -125,6 +125,7 @@ def validate_abs(args, device_id):
     if (args.test_all):
         cp_files = sorted(glob.glob(os.path.join(args.model_path, 'model_step_*.pt')))
         cp_files.sort(key=os.path.getmtime)
+        test_abs(args, device_id, cp_files[0], 1)
         xent_lst = []
         for i, cp in enumerate(cp_files):
             step = int(cp.split('.')[-2].split('_')[-1])
@@ -145,6 +146,7 @@ def validate_abs(args, device_id):
         while (True):
             cp_files = sorted(glob.glob(os.path.join(args.model_path, 'model_step_*.pt')))
             cp_files.sort(key=os.path.getmtime)
+            test_abs(args, device_id, cp_files[0], 1)
             if (cp_files):
                 cp = cp_files[-1]
                 time_of_cp = os.path.getmtime(cp)
@@ -176,7 +178,7 @@ def validate(args, device_id, pt, step):
         test_from = args.test_from
     logger.info('Loading checkpoint from %s' % test_from)
     checkpoint = torch.load(test_from, map_location=lambda storage, loc: storage)
-    opt = vars(checkpoint['opt'])
+    opt = checkpoint['opt']
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
@@ -209,7 +211,7 @@ def test_abs(args, device_id, pt, step):
     logger.info('Loading checkpoint from %s' % test_from)
 
     checkpoint = torch.load(test_from, map_location=lambda storage, loc: storage)
-    opt = vars(checkpoint['opt'])
+    opt = checkpoint['opt']
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
@@ -239,7 +241,7 @@ def test_text_abs(args, device_id, pt, step):
     logger.info('Loading checkpoint from %s' % test_from)
 
     checkpoint = torch.load(test_from, map_location=lambda storage, loc: storage)
-    opt = vars(checkpoint['opt'])
+    opt = checkpoint['opt']
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
@@ -298,7 +300,7 @@ def train_abs_single(args, device_id):
         logger.info('Loading checkpoint from %s' % args.train_from)
         checkpoint = torch.load(args.train_from,
                                 map_location=lambda storage, loc: storage)
-        opt = vars(checkpoint['opt'])
+        opt = checkpoint['opt']
         args.model_config = ModelConfig(**opt)
         print(args.model_config)
     else:
@@ -320,7 +322,6 @@ def train_abs_single(args, device_id):
 
     tokenizer = build_tokenizer(args)
     args.model_config.vocab_size = tokenizer.vocab_size
-    print(vocab_size)
     vocab = tokenizer.get_vocab()
     symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
                'PAD': vocab[SpecialTokens.pad_token]}

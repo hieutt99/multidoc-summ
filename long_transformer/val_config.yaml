@@ -19,8 +19,8 @@ report_rouge: True
 
 
 # general
-batch_size: 150
-test_batch_size: 200
+batch_size: 2000
+test_batch_size: 1000
 
 max_pos: 512
 max_position_embeddings: 512

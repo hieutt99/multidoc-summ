@@ -74,7 +74,6 @@ class TransformerDecoderLayer(nn.Module):
                                      type="self")
 
         query = self.drop(query) + inputs
-
         query_norm = self.layer_norm_2(query)
         mid = self.context_attn(memory_bank, memory_bank, query_norm,
                                       mask=src_pad_mask,
@@ -156,7 +155,6 @@ class TransformerDecoder(nn.Module):
         """
         See :obj:`onmt.modules.RNNDecoderBase.forward()`
         """
-
         src_words = state.src
         tgt_words = tgt
         src_batch, src_len = src_words.size()

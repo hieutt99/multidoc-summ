@@ -177,7 +177,7 @@ def validate(args, device_id, pt, step):
         test_from = args.test_from
     logger.info('Loading checkpoint from %s' % test_from)
     checkpoint = torch.load(test_from, map_location=lambda storage, loc: storage)
-    opt = vars(checkpoint['opt'])
+    opt = checkpoint['opt']
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
@@ -211,7 +211,7 @@ def test_abs(args, device_id, pt, step):
     logger.info('Loading checkpoint from %s' % test_from)
 
     checkpoint = torch.load(test_from, map_location=lambda storage, loc: storage)
-    opt = vars(checkpoint['opt'])
+    opt = checkpoint['opt']
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
@@ -241,7 +241,7 @@ def test_text_abs(args, device_id, pt, step):
     logger.info('Loading checkpoint from %s' % test_from)
 
     checkpoint = torch.load(test_from, map_location=lambda storage, loc: storage)
-    opt = vars(checkpoint['opt'])
+    opt = checkpoint['opt']
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
@@ -300,7 +300,7 @@ def train_abs_single(args, device_id):
         logger.info('Loading checkpoint from %s' % args.train_from)
         checkpoint = torch.load(args.train_from,
                                 map_location=lambda storage, loc: storage)
-        opt = vars(checkpoint['opt'])
+        opt = checkpoint['opt']
         args.model_config = ModelConfig(**opt)
         print(args.model_config)
     else:

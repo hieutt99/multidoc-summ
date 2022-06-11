@@ -105,6 +105,7 @@ class Translator(object):
         translations = []
         for b in range(batch_size):
             pred_sents = self.vocab.convert_ids_to_tokens([int(n) for n in preds[b][0]])
+            print(pred_sents)
             pred_sents = ' '.join(pred_sents).replace(' ##','')
             gold_sent = ' '.join(tgt_str[b].split())
             # translation = Translation(fname[b],src[:, b] if src is not None else None,
@@ -113,6 +114,7 @@ class Translator(object):
             #                           gold_score[b])
             # src = self.spm.DecodeIds([int(t) for t in translation_batch['batch'].src[0][5] if int(t) != len(self.spm)])
             raw_src = [self.vocab.ids_to_tokens[int(t)] for t in src[b]][:500]
+            print(raw_src)
             raw_src = ' '.join(raw_src)
             translation = (pred_sents, gold_sent, raw_src)
             # translation = (pred_sents[0], gold_sent)
@@ -272,9 +274,6 @@ class Translator(object):
 
         for step in range(max_length):
             decoder_input = alive_seq[:, -1].view(1, -1)
-            print(src_features.size())
-            print(alive_seq.size())
-            print(decoder_input.size())
 
             # Decoder forward.
             decoder_input = decoder_input.transpose(0,1)

@@ -81,18 +81,18 @@ class Translator(object):
                 "scores": [],
                 "log_probs": []}
 
-    def _build_target_tokens(self, pred):
-        # vocab = self.fields["tgt"].vocab
-        tokens = []
-        for tok in pred:
-            tok = int(tok)
-            tokens.append(tok)
-            if tokens[-1] == self.end_token:
-                tokens = tokens[:-1]
-                break
-        tokens = [t for t in tokens if t < len(self.vocab)]
-        tokens = self.vocab.DecodeIds(tokens).split(' ')
-        return tokens
+    # def _build_target_tokens(self, pred):
+    #     # vocab = self.fields["tgt"].vocab
+    #     tokens = []
+    #     for tok in pred:
+    #         tok = int(tok)
+    #         tokens.append(tok)
+    #         if tokens[-1] == self.end_token:
+    #             tokens = tokens[:-1]
+    #             break
+    #     tokens = [t for t in tokens if t < len(self.vocab)]
+    #     tokens = self.vocab.DecodeIds(tokens).split(' ')
+    #     return tokens
 
     def from_batch(self, translation_batch):
         batch = translation_batch["batch"]
@@ -104,7 +104,8 @@ class Translator(object):
 
         translations = []
         for b in range(batch_size):
-            pred_sents = self.vocab.convert_ids_to_tokens([int(n) for n in preds[b][0]])
+            # pred_sents = self.vocab.convert_ids_to_tokens([int(n) for n in preds[b][0]])
+            pred_sents = [self.vocab._convert_id_to_token(int(n)) for n in preds[b][0]]
             pred_sents = ' '.join(pred_sents).replace(' ##','')
             gold_sent = ' '.join(tgt_str[b].split())
             # translation = Translation(fname[b],src[:, b] if src is not None else None,
@@ -112,7 +113,8 @@ class Translator(object):
             #                           attn[b], pred_score[b], gold_sent,
             #                           gold_score[b])
             # src = self.spm.DecodeIds([int(t) for t in translation_batch['batch'].src[0][5] if int(t) != len(self.spm)])
-            raw_src = [self.vocab.ids_to_tokens[int(t)] for t in src[b]][:500]
+            # raw_src = [self.vocab.ids_to_tokens[int(t)] for t in src[b]][:500]
+            raw_src = [self.vocab._convert_id_to_token(int(t)) for t in src[b]][:500]
             raw_src = ' '.join(raw_src)
             translation = (pred_sents, gold_sent, raw_src)
             # translation = (pred_sents[0], gold_sent)
@@ -232,7 +234,7 @@ class Translator(object):
         segs = batch.segs
         mask_src = batch.mask_src
 
-        src_features = self.model.bert(src, segs, mask_src)
+        src_features, _ = self.model.bert(src, segs, mask_src)
         dec_states = self.model.decoder.init_decoder_state(src, src_features, with_cache=True)
         device = src_features.device
 
@@ -299,7 +301,8 @@ class Translator(object):
                     for i in range(alive_seq.size(0)):
                         fail = False
                         words = [int(w) for w in alive_seq[i]]
-                        words = [self.vocab.ids_to_tokens[w] for w in words]
+                        # words = [self.vocab.ids_to_tokens[w] for w in words]
+                        words = [self.vocab._convert_id_to_token(w) for w in words]
                         words = ' '.join(words).replace(' ##','').split()
                         if(len(words)<=3):
                             continue

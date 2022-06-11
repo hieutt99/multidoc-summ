@@ -26,10 +26,10 @@ class PositionalEncoding(nn.Module):
     def forward(self, emb, step=None):
         emb = emb * math.sqrt(self.dim)
         if (step):
-            emb = self.pe[:, step][:, None, :]
+            emb = emb + self.pe[:, step][:, None, :]
 
         else:
-            emb = self.pe[:, :emb.size(1)]
+            emb = emb + self.pe[:, :emb.size(1)]
         emb = self.dropout(emb)
         return emb
 

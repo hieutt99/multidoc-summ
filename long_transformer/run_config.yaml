@@ -19,7 +19,7 @@ report_rouge: True
 
 
 # general
-batch_size: 150
+batch_size: 2000
 test_batch_size: 200
 
 max_pos: 512
@@ -43,10 +43,10 @@ warmup_steps_dec: 10000
 max_grad_norm: 0
 
 # train phase
-save_checkpoint_steps: 1
+save_checkpoint_steps: 2
 accum_count: 5
 report_every: 100
-train_steps: 1
+train_steps: 2
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1

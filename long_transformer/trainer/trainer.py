@@ -331,6 +331,7 @@ class Trainer(object):
 
         model_state_dict = real_model.state_dict()
         # generator_state_dict = real_generator.state_dict()
+        print(self.args.model_config)
         checkpoint = {
             'model': model_state_dict,
             # 'generator': generator_state_dict,

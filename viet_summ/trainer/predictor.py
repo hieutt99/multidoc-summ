@@ -234,7 +234,9 @@ class Translator(object):
         segs = batch.segs
         mask_src = batch.mask_src
 
-        src_features, _ = self.model.bert(src, segs, mask_src)
+        src_features, _ = self.model.bert(input_ids=src,
+                            attention_mask=mask_src,
+                            token_type_ids=segs, return_dict=False)
         dec_states = self.model.decoder.init_decoder_state(src, src_features, with_cache=True)
         device = src_features.device
 

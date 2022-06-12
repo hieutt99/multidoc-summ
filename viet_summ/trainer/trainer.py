@@ -278,8 +278,9 @@ class Trainer(object):
                     return True
             return False
 
-        if (not cal_lead and not cal_oracle):
-            self.model.eval()
+        # if (not cal_lead and not cal_oracle):
+        #     self.model.eval()
+        self.model.eval()
         stats = Statistics()
 
         can_path = '%s_step%d.candidate'%(self.args.result_path,step)

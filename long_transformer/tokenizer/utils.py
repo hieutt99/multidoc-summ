@@ -19,7 +19,8 @@ TOKENIZER_MAP = {
 def build_tokenizer(args):
     return AutoTokenizer.from_pretrained(TOKENIZER_MAP[args.model_config.model_name], 
         cache_dir=args.temp_dir,
-        use_fast=False
+        use_fast=False,
+        do_basic_tokenize=False,
         )
 
 

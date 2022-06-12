@@ -109,7 +109,7 @@ class Translator(object):
             # print(preds[b][0])
             # print(self.vocab._convert_id_to_token(int(preds[b][0][0])))
             # print(pred_sents)
-            pred_sents = ' '.join(pred_sents).replace(' ##','')
+            pred_sents = ' '.join(pred_sents).replace(' ##','').replace("@@ ", '')
             gold_sent = ' '.join(tgt_str[b].split())
             # translation = Translation(fname[b],src[:, b] if src is not None else None,
             #                           src_raw, pred_sents,

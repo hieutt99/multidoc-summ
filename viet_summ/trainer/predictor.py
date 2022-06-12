@@ -58,6 +58,11 @@ class Translator(object):
         self.symbols = symbols
         self.start_token = symbols['BOS']
         self.end_token = symbols['EOS']
+        self.pad_token = symbols['PAD']
+
+        self.start_ = self.vocab._convert_id_to_token(self.start_token)
+        self.end_ = self.vocab._convert_id_to_token(self.end_)
+        self.pad_ = self.vocab._convert_id_to_token(self.pad_)
 
         self.global_scorer = global_scorer
         self.beam_size = args.beam_size
@@ -156,7 +161,8 @@ class Translator(object):
 
                 for trans in translations:
                     pred, gold, src = trans
-                    pred_str = pred.replace('<pad>', '').replace('<s>', '').replace(r' +', ' ').replace(' </s> ', '<q>').replace('<s>', '').strip()
+                    # pred_str = pred.replace('<pad>', '').replace('<s> </s>', '<q>').replace('</s>', '').replace('<s>', '').strip()
+                    pred_str = pred.replace(self.pad_, '').replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').strip()
                     gold_str = gold.strip()
                     if(self.args.recall_eval):
                         _pred_str = ''

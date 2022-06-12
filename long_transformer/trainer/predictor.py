@@ -60,6 +60,10 @@ class Translator(object):
         self.end_token = symbols['EOS']
         self.pad_token = symbols['PAD']
 
+        self.start_ = self.vocab._convert_id_to_token(self.start_token)
+        self.end_ = self.vocab._convert_id_to_token(self.end_)
+        self.pad_ = self.vocab._convert_id_to_token(self.pad_)
+
         self.global_scorer = global_scorer
         self.beam_size = args.beam_size
         self.min_length = args.min_length
@@ -157,7 +161,7 @@ class Translator(object):
                     # thay doi do bert base cased khong su dung token unused0
                     # pred_str = pred.replace('[unused0]', '').replace('[unused3]', '').replace('[PAD]', '').replace('[unused1]', '').replace(r' +', ' ').replace(' [unused2] ', '<q>').replace('[unused2]', '').strip()
                     # pred_str = pred.replace('[unused4]', '').replace('[unused2]', '').replace('[PAD]', '').replace('[unused1]', '').replace(r' +', ' ').replace(' [unused3] ', '<q>').replace('[unused3]', '').strip()
-                    pred_str = pred.replace(f'{self.start_token} {self.end_token}', '<q>').replace(self.end_token, '').replace(self.start_token, '').replace(self.pad_token, '').strip()
+                    pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
                     gold_str = gold.strip()
                     if(self.args.recall_eval):
                         _pred_str = ''

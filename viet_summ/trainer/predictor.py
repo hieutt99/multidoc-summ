@@ -106,7 +106,9 @@ class Translator(object):
         for b in range(batch_size):
             # pred_sents = self.vocab.convert_ids_to_tokens([int(n) for n in preds[b][0]])
             pred_sents = [self.vocab._convert_id_to_token(int(n)) for n in preds[b][0]]
-            print(pred_sents)
+            # print(preds[b][0])
+            # print(self.vocab._convert_id_to_token(int(preds[b][0][0])))
+            # print(pred_sents)
             pred_sents = ' '.join(pred_sents).replace(' ##','')
             gold_sent = ' '.join(tgt_str[b].split())
             # translation = Translation(fname[b],src[:, b] if src is not None else None,

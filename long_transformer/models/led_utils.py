@@ -46,10 +46,6 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
 
     def forward(self, src, segs, glob_mask, clss, mask_src, mask_cls):
-        # global attention on <s>
-        temp = torch.zeros(segs.size()).to(src.get_device())
-        for i in clss.unsqueeze(0):
-            temp[0, i] = 1
         
         led_outputs = self.led_model(input_ids=src,
                             attention_mask=mask_src,

@@ -43,10 +43,10 @@ warmup_steps_dec: 10000
 max_grad_norm: 0
 
 # train phase
-save_checkpoint_steps: 2000
+save_checkpoint_steps: 5000
 accum_count: 5
 report_every: 100
-train_steps: 40000
+train_steps: 100000
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1

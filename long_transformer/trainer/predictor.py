@@ -63,6 +63,9 @@ class Translator(object):
         self.start_ = self.vocab._convert_id_to_token(self.start_token)
         self.end_ = self.vocab._convert_id_to_token(self.end_token)
         self.pad_ = self.vocab._convert_id_to_token(self.pad_token)
+        # print(self.start_)
+        # print(self.end_)
+        # print(self.pad_)
 
         self.global_scorer = global_scorer
         self.beam_size = args.beam_size
@@ -139,8 +142,8 @@ class Translator(object):
 
         # raw_gold_path = self.args.result_path + '.%d.raw_gold' % step
         # raw_can_path = self.args.result_path + '.%d.raw_candidate' % step
-        self.gold_out_file = codecs.open(gold_path, 'w', 'utf-8')
-        self.can_out_file = codecs.open(can_path, 'w', 'utf-8')
+        # self.gold_out_file = codecs.open(gold_path, 'w', 'utf-8')
+        # self.can_out_file = codecs.open(can_path, 'w', 'utf-8')
 
         raw_src_path = self.args.result_path + '.%d.raw_src' % step
         self.src_out_file = codecs.open(raw_src_path, 'w', 'utf-8')

@@ -1,9 +1,9 @@
 task: abs
 mode: train
 
-bert_data_path: ./vietnews_bert_data_shards/vietnews.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models_abs/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models_abs/
+bert_data_path: ./abs_bert_data_shards/multi_news_abs.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -34,7 +34,7 @@ param_init_glorot: True
 optim: adam
 lr: 2.0e-3
 lr_bert: 2.0e-3
-lr_dec: 0.02
+lr_dec: 0.2
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000
@@ -43,10 +43,10 @@ warmup_steps_dec: 10000
 max_grad_norm: 0
 
 # train phase
-save_checkpoint_steps: 2000
+save_checkpoint_steps: 4000
 accum_count: 5
 report_every: 100
-train_steps: 20000
+train_steps: 50000
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1
@@ -54,7 +54,7 @@ generator_shard_size: 32
 alpha: 0.6 
 beam_size: 5
 min_length: 5
-max_length: 40
+max_length: 15
 max_tgt_len: 200 
 ext_predict_nsents: 10
 
@@ -69,4 +69,3 @@ test_all: true
 
 load_from_extractive: ""
 sep_optim: True
-test_start_from: -1

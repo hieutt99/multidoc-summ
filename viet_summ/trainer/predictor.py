@@ -61,8 +61,8 @@ class Translator(object):
         self.pad_token = symbols['PAD']
 
         self.start_ = self.vocab._convert_id_to_token(self.start_token)
-        self.end_ = self.vocab._convert_id_to_token(self.end_)
-        self.pad_ = self.vocab._convert_id_to_token(self.pad_)
+        self.end_ = self.vocab._convert_id_to_token(self.end_token)
+        self.pad_ = self.vocab._convert_id_to_token(self.pad_token)
 
         self.global_scorer = global_scorer
         self.beam_size = args.beam_size

@@ -28,6 +28,7 @@ class ModelConfig:
     max_position_embeddings: int
     bert_model: str = 'bert-base-cased'
     type_doc_size: int = 2
+    padding_idx: int = 0
 
     def __init__(self, **kwargs):
         for k, v in kwargs.items():

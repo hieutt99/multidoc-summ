@@ -11,7 +11,7 @@ checkpoint: null
 
 
 train_from: null
-test_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/model_step_8000.pt
+test_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/model_step_500.pt
 log_file: ./logs/model_log
 
 block_trigram: True

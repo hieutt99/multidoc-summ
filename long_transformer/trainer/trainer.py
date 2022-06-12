@@ -222,7 +222,7 @@ class Trainer(object):
             mask_tgt = batch.mask_tgt
             mask_cls = batch.mask_cls
 
-            outputs, scores = self.model(src, tgt,segs, clss, mask_src, mask_tgt, mask_cls)
+            outputs, scores = self.model(src, tgt, segs, clss, mask_src, mask_tgt, mask_cls)
             batch_stats = self.loss.sharded_compute_loss(batch, outputs, self.args.generator_shard_size, normalization)
 
             batch_stats.n_docs = int(src.size(0))

@@ -247,6 +247,7 @@ class Translator(object):
 
         src_features, _ = self.model.bert(input_ids=src, token_type_ids=segs, 
                                     attention_mask=mask_src, return_dict=False)
+
         dec_states = self.model.decoder.init_decoder_state(src, src_features, with_cache=True)
         device = src_features.device
 
@@ -287,7 +288,6 @@ class Translator(object):
 
             # Decoder forward.
             decoder_input = decoder_input.transpose(0,1)
-            # print(decoder_input.size())
 
             dec_out, dec_states = self.model.decoder(decoder_input, src_features, dec_states,
                                                      step=step)

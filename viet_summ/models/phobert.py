@@ -117,6 +117,7 @@ class BasicViTransformerSentenceGeneration(nn.Module):
             d_ff=args.dec_ff_size, dropout=args.dec_dropout, embeddings=tgt_embeddings)
 
         self.generator = get_generator(args.vocab_size, args.d_model)
+        self.generator[0].weight = self.decoder.embeddings.weight
         self.vocab_size = args.vocab_size
         self.args = args
 

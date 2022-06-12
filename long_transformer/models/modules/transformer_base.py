@@ -277,7 +277,7 @@ class TransformerDecoder(nn.Module):
         self.layer_norm = nn.LayerNorm(d_model, eps=1e-6)
 
     def forward(self, tgt, memory_bank, state, memory_lengths=None,
-                step=None, cache=None,memory_masks=None):
+                step=None, cache=None, memory_masks=None):
         """
         See :obj:`onmt.modules.RNNDecoderBase.forward()`
         """
@@ -290,7 +290,6 @@ class TransformerDecoder(nn.Module):
         # Run the forward pass of the TransformerDecoder.
         # emb = self.embeddings(tgt, step=step)
         emb = self.embeddings(tgt)
-  
         assert emb.dim() == 3  # len x batch x embedding_dim
 
         output = self.pos_emb(emb, step)

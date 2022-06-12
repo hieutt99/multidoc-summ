@@ -46,6 +46,7 @@ class BasicTransformerSentenceGeneration(nn.Module):
             d_ff=args.dec_ff_size, dropout=args.dec_dropout, embeddings=tgt_embeddings)
 
         self.generator = get_generator(args.vocab_size, args.d_model)
+        self.generator[0].weight = self.decoder.embeddings.weight
         self.vocab_size = args.vocab_size
         self.args = args
 
@@ -53,7 +54,7 @@ class BasicTransformerSentenceGeneration(nn.Module):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             token_type_ids=segs, return_dict=False)
-        
+
         dec_state = self.decoder.init_decoder_state(src, top_vec)
         decoder_outputs, state = self.decoder(tgt[:, :-1], top_vec, dec_state)
         return decoder_outputs, None

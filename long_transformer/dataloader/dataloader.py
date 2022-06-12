@@ -33,6 +33,7 @@ class Batch(object):
             segs = torch.tensor(self._pad(pre_segs, 0))
             glob_mask = torch.tensor(self._pad(pre_glob_mask, 0))
             mask_src = ~ (src == 0)
+            mask_src = torch.where(mask_src == True, 1, 0)
             mask_tgt = ~ (tgt == 0)
 
 

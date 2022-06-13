@@ -2,8 +2,10 @@
 """ Translator Class and builder """
 from __future__ import print_function
 import codecs
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 import math
+from tqdm.auto import tqdm 
 
 import torch
 
@@ -130,7 +132,7 @@ class Translator(object):
 
         return translations
 
-    def translate(self,
+    def translate_(self,
                   data_iter, step,
                   attn_debug=False):
 
@@ -192,6 +194,80 @@ class Translator(object):
                 self.can_out_file.flush()
                 self.gold_out_file.flush()
                 self.src_out_file.flush()
+
+        self.can_out_file.close()
+        self.gold_out_file.close()
+        self.src_out_file.close()
+
+        if (step != -1):
+            rouges = self._report_rouge(gold_path, can_path)
+            self.logger.info('Rouges at step %d \n%s' % (step, rouge_results_to_str(rouges)))
+            if self.tensorboard_writer is not None:
+                self.tensorboard_writer.add_scalar('test/rouge1-F', rouges['rouge_1_f_score'], step)
+                self.tensorboard_writer.add_scalar('test/rouge2-F', rouges['rouge_2_f_score'], step)
+                self.tensorboard_writer.add_scalar('test/rougeL-F', rouges['rouge_l_f_score'], step)
+
+    def _handle(self, batch):
+        batch_data = self.translate_batch(batch)
+        translations = self.from_batch(batch_data)
+
+        save_pred = ''
+        save_gold = ''
+        save_src = ''
+        for trans in translations:
+            pred, gold, src = trans
+            pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
+            gold_str = gold.strip()
+            if(self.args.recall_eval):
+                _pred_str = ''
+                gap = 1e3
+                for sent in pred_str.split('<q>'):
+                    can_pred_str = _pred_str+ '<q>'+sent.strip()
+                    can_gap = math.fabs(len(_pred_str.split())-len(gold_str.split()))
+                    if(len(can_pred_str.split())>=len(gold_str.split())+10):
+                        pred_str = _pred_str
+                        break
+                    else:
+                        gap = can_gap
+                        _pred_str = can_pred_str
+
+            save_pred += f'{pred_str}\n'
+            save_gold += f'{gold_str}\n'
+            save_src += f'{src.strip()}\n'
+        return save_pred, save_gold, save_src, len(translations)
+
+    def translate(self,
+                  data_iter, step,
+                  attn_debug=False):
+
+        self.model.eval()
+        gold_path = self.args.result_path + '.%d.gold' % step
+        can_path = self.args.result_path + '.%d.candidate' % step
+        self.gold_out_file = codecs.open(gold_path, 'w', 'utf-8')
+        self.can_out_file = codecs.open(can_path, 'w', 'utf-8')
+
+        raw_src_path = self.args.result_path + '.%d.raw_src' % step
+        self.src_out_file = codecs.open(raw_src_path, 'w', 'utf-8')
+
+        ct = 0
+        with torch.no_grad(), ThreadPoolExecutor(8) as executor:
+            futures = []
+            for batch in data_iter:
+                futures.append(executor.submit(self._handle, batch))
+
+            pbar = tqdm(list(range(len(futures))))
+            for future in as_completed(futures):
+                save_pred, save_gold, save_src, c = future.result()
+                self.can_out_file.write(save_pred)
+                self.gold_out_file.write(save_gold)
+                self.src_out_file.write(save_src)
+                ct += c
+                self.can_out_file.flush()
+                self.gold_out_file.flush()
+                self.src_out_file.flush()
+                pbar.update(1)
+
+            pbar.close()
 
         self.can_out_file.close()
         self.gold_out_file.close()

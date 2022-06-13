@@ -51,7 +51,7 @@ label_smoothing: 0.1
 generator_shard_size: 32
 alpha: 0.6 
 beam_size: 5
-min_length: 5
+min_length: 100
 max_length: 150
 max_tgt_len: 200 
 ext_predict_nsents: 20

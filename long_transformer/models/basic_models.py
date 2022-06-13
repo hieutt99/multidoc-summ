@@ -28,14 +28,14 @@ class BasicTransformerSentenceGeneration(nn.Module):
             self.bert.train()
         self.bert.embeddings.register_buffer("position_ids", torch.arange(args.max_position_embeddings).expand((1, -1)))
             
-        if(args.max_position_embeddings>258):
+        if(args.max_position_embeddings>512):
+            my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
+            my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
+            my_pos_embeddings.weight.data[512:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
+            self.bert.embeddings.position_embeddings = my_pos_embeddings
 
-            self.bert.embeddings.position_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
-
-        self.bert.embeddings.token_type_embeddings = nn.Embedding(2, self.bert.config.hidden_size)
-
-        self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
-        self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
+        # self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
+        # self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
 
         tgt_embeddings = nn.Embedding(args.vocab_size, args.d_model, padding_idx=0)
         tgt_embeddings.weight = copy.deepcopy(self.bert.embeddings.word_embeddings.weight)

@@ -108,8 +108,8 @@ def abs_batch_size_fn(new, count):
     max_n_sents = max(max_n_sents, len(tgt))
     max_size = max(max_size, max_n_sents)
     src_elements = count * max_size
-    if (count > 6):
-        return src_elements + 1e4
+# if (count > 6):
+    #     return src_elements + 1e4
     return src_elements
 
 

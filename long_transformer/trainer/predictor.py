@@ -152,6 +152,7 @@ class Translator(object):
 
         # pred_results, gold_results = [], []
         ct = 0
+        pbar = tqdm()
         with torch.no_grad():
             for batch in data_iter:
                 if(self.args.recall_eval):
@@ -161,6 +162,8 @@ class Translator(object):
                 batch_data = self.translate_batch(batch)
                 translations = self.from_batch(batch_data)
 
+                pbar.update(1)
+                pbar.set_postfix(b=len(translations))
                 for trans in translations:
                     pred, gold, src = trans
                     # thay doi do bert base cased khong su dung token unused0
@@ -194,7 +197,7 @@ class Translator(object):
                 self.can_out_file.flush()
                 self.gold_out_file.flush()
                 self.src_out_file.flush()
-
+        pbar.close()
         self.can_out_file.close()
         self.gold_out_file.close()
         self.src_out_file.close()
@@ -250,7 +253,7 @@ class Translator(object):
         self.src_out_file = codecs.open(raw_src_path, 'w', 'utf-8')
 
         ct = 0
-        with torch.no_grad(), ThreadPoolExecutor(8) as executor:
+        with torch.no_grad(), ThreadPoolExecutor(4) as executor:
             futures = []
             for batch in data_iter:
                 futures.append(executor.submit(self._handle, batch))
@@ -266,6 +269,7 @@ class Translator(object):
                 self.gold_out_file.flush()
                 self.src_out_file.flush()
                 pbar.update(1)
+                pbar.set_postfix(c=c)
 
             pbar.close()
 

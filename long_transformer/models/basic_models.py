@@ -50,6 +50,20 @@ class BasicTransformerSentenceGeneration(nn.Module):
         self.vocab_size = args.vocab_size
         self.args = args
 
+        for module in self.decoder.modules():
+            if isinstance(module, (nn.Linear, nn.Embedding)):
+                module.weight.data.normal_(mean=0.0, std=0.02)
+            elif isinstance(module, nn.LayerNorm):
+                module.bias.data.zero_()
+                module.weight.data.fill_(1.0)
+            if isinstance(module, nn.Linear) and module.bias is not None:
+                module.bias.data.zero_()
+        for p in self.generator.parameters():
+            if p.dim() > 1:
+                nn.init.xavier_uniform_(p)
+            else:
+                p.data.zero_()
+
     def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,

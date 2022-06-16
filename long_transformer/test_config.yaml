@@ -20,7 +20,7 @@ report_rouge: True
 
 # general
 batch_size: 500
-test_batch_size: 3000
+test_batch_size: 2000
 
 max_pos: 512
 max_position_embeddings: 512
@@ -45,13 +45,13 @@ save_checkpoint_steps: 1000
 accum_count: 5
 report_every: 100
 train_steps: 20000
-recall_eval: False
+recall_eval: True
 ## trainer 
 label_smoothing: 0.1
 generator_shard_size: 32
 alpha: 0.6 
 beam_size: 5
-min_length: 250
+min_length: 300
 max_length: 500
 max_tgt_len: 200 
 ext_predict_nsents: 20

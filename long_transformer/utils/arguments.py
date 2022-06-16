@@ -7,25 +7,25 @@ import os
 
 @dataclass(init=True, repr=True)
 class ModelConfig:
-    model_name: str
-    vocab_size: int
-    freeze_bert: bool
-    d_model: int
-    num_heads: int
-    dropout: float 
-    norm_first: bool
-    num_encoder_blocks: int
-    num_decoder_blocks: int
-    layer_norm_eps: float
-    d_ff: int
+    model_name: str = None
+    vocab_size: int = None
+    freeze_bert: bool = None
+    d_model: int = None
+    num_heads: int = None
+    dropout: float = None
+    norm_first: bool = None
+    num_encoder_blocks: int = None
+    num_decoder_blocks: int = None
+    layer_norm_eps: float = None 
+    d_ff: int = None
 
-    dec_layers: int
-    dec_hidden_size: int
-    dec_heads: int
-    dec_ff_size: int
-    dec_dropout: float
+    dec_layers: int = None
+    dec_hidden_size: int = None
+    dec_heads: int = None
+    dec_ff_size: int = None
+    dec_dropout: float = None
     # bert_config: BertConfig
-    max_position_embeddings: int
+    max_position_embeddings: int = None
     bert_model: str = 'bert-base-cased'
     type_doc_size: int = 2
 

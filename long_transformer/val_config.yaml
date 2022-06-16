@@ -6,7 +6,7 @@ model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/
 result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/
 temp_dir: ./temp
 
-model_config_path: model_config.yaml
+model_config_path: ./old_configs/ultimate_led_ext/model_config.yaml
 checkpoint: null
 
 

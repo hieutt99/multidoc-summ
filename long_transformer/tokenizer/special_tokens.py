@@ -2,10 +2,10 @@ class SpecialTokens():
     sep_token = '[SEP]'
     cls_token = '[CLS]'
     pad_token = '[PAD]'
-    tgt_bos = '[unused1]' # 0
-    tgt_eos = '[unused2]' # 1
-    # tgt_bos = '[SEP]' # 0
-    # tgt_eos = '[CLS]' # 1
+    # tgt_bos = '[unused1]' # 0
+    # tgt_eos = '[unused2]' # 1
+    tgt_bos = '[SEP]' # 0
+    tgt_eos = '[CLS]' # 1
 
     # tgt_sent_split = '[unused3]' # 2
     # src_story_split = '[unused4]' # 3

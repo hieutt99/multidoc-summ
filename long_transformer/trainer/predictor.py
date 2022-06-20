@@ -220,7 +220,7 @@ class Translator(object):
         for trans in translations:
             pred, gold, src = trans
             # pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
-            pred_str = pred.replace(f'{self.start_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
+            pred_str = pred.replace(f' {self.start_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
             gold_str = gold.strip()
             if(self.args.recall_eval):
                 _pred_str = ''

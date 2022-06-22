@@ -117,7 +117,6 @@ class Translator(object):
             # pred_sents = self.vocab.convert_ids_to_tokens([int(n) for n in preds[b][0]])
             pred_sents = [self.vocab._convert_id_to_token(int(n)) for n in preds[b][0]]
             pred_sents = ' '.join(pred_sents).replace(' ##','')
-            print(pred_sents)
             gold_sent = ' '.join(tgt_str[b].split())
             # translation = Translation(fname[b],src[:, b] if src is not None else None,
             #                           src_raw, pred_sents,
@@ -170,7 +169,7 @@ class Translator(object):
                     # thay doi do bert base cased khong su dung token unused0
                     # pred_str = pred.replace('[unused0]', '').replace('[unused3]', '').replace('[PAD]', '').replace('[unused1]', '').replace(r' +', ' ').replace(' [unused2] ', '<q>').replace('[unused2]', '').strip()
                     # pred_str = pred.replace('[unused4]', '').replace('[unused2]', '').replace('[PAD]', '').replace('[unused1]', '').replace(r' +', ' ').replace(' [unused3] ', '<q>').replace('[unused3]', '').strip()
-                    pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
+                    pred_str = pred.strip().replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
                     gold_str = gold.strip()
                     if(self.args.recall_eval):
                         _pred_str = ''

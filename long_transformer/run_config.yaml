@@ -10,7 +10,7 @@ model_config_path: model_config.yaml
 checkpoint: null
 
 
-train_from: null
+train_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/model_step_30000.pt
 test_from: null
 log_file: ./logs/model_log
 
@@ -46,7 +46,7 @@ max_grad_norm: 0
 save_checkpoint_steps: 1000
 accum_count: 5
 report_every: 100
-train_steps: 20000
+train_steps: 50000
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1

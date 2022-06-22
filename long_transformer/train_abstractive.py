@@ -217,7 +217,7 @@ def test_abs(args, device_id, pt, step):
     args.model_config.vocab_size = tokenizer.vocab_size
     vocab = tokenizer.get_vocab()
     symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
-               'PAD': vocab[SpecialTokens.pad_token]}
+               'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.tgt_sent_split]}
 
     model = build_model(args.model_config, device, checkpoint)
     model.eval()
@@ -247,7 +247,7 @@ def test_text_abs(args, device_id, pt, step):
     args.model_config.vocab_size = tokenizer.vocab_size
     vocab = tokenizer.get_vocab()
     symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
-               'PAD': vocab[SpecialTokens.pad_token]}
+                'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.tgt_sent_split]}
 
     model = build_model(args.model_config, device, checkpoint)
     model.eval()
@@ -322,7 +322,7 @@ def train_abs_single(args, device_id):
     args.model_config.vocab_size = tokenizer.vocab_size
     vocab = tokenizer.get_vocab()
     symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
-               'PAD': vocab[SpecialTokens.pad_token]}
+               'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.tgt_sent_split]}
 
     model = build_model(args.model_config, device, checkpoint)
     if (args.sep_optim):

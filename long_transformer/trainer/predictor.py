@@ -61,10 +61,12 @@ class Translator(object):
         self.start_token = symbols['BOS']
         self.end_token = symbols['EOS']
         self.pad_token = symbols['PAD']
+        self.split_token = symbols['EOQ']
 
         self.start_ = self.vocab._convert_id_to_token(self.start_token)
         self.end_ = self.vocab._convert_id_to_token(self.end_token)
         self.pad_ = self.vocab._convert_id_to_token(self.pad_token)
+        self.split_ = self.vocab._convert_id_to_token(self.split_token)
         # print(self.start_)
         # print(self.end_)
         # print(self.pad_)
@@ -221,7 +223,7 @@ class Translator(object):
             pred, gold, src = trans
             # pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
             # print(pred)
-            pred_str = pred.replace(f' {self.start_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
+            pred_str = pred.replace(f' {self.split_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').replace(self.split_, '').strip()
             gold_str = gold.strip()
             if(self.args.recall_eval):
                 _pred_str = ''

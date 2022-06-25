@@ -10,8 +10,8 @@ model_config_path: model_config.yaml
 checkpoint: null
 
 
-train_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/model_step_20000.pt
-# train_from: null
+# train_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/model_step_20000.pt
+train_from: null
 test_from: null
 log_file: ./logs/model_log
 

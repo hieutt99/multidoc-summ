@@ -6,6 +6,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 import os
 import math
 from tqdm.auto import tqdm 
+import re
 
 import torch
 
@@ -223,7 +224,12 @@ class Translator(object):
             pred, gold, src = trans
             # pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
             # print(pred)
-            pred_str = pred.strip().replace(f' {self.split_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').replace(self.split_, '').strip()
+            pred_str = pred.strip()\
+                .replace(f' {self.split_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').replace(self.split_, '')\
+            pred_str = re.sub(r'[\[unused]+[1-9]+[\]]+','<q>', pred_str)
+            pred_str = re.sub(r'[<q>]+','<q>', pred_str)
+            pred_str = re.sub(r' [<q>]+','<q>', pred_str)
+            pred_str.strip('<q>').strip()
             gold_str = gold.strip()
             if(self.args.recall_eval):
                 _pred_str = ''

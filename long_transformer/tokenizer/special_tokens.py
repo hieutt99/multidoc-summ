@@ -7,6 +7,12 @@ class SpecialTokens():
     tgt_bos = '[SEP]' # 0
     tgt_eos = '[CLS]' # 1
     tgt_sent_split = '[unused1]' # 2
+    
+    # temp
+    sep_vid = 102
+    cls_vid = 101
+    pad_vid = 0
+    tgt_sent_split_vid = 1
 
     # tgt_sent_split = '[unused3]' # 2
     # src_story_split = '[unused4]' # 3

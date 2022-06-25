@@ -225,7 +225,7 @@ class Translator(object):
             # pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
             # print(pred)
             pred_str = pred.strip()\
-                .replace(f' {self.split_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').replace(self.split_, '')\
+                .replace(f' {self.split_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').replace(self.split_, '')
             pred_str = re.sub(r'[\[unused]+[1-9]+[\]]+','<q>', pred_str)
             pred_str = re.sub(r'[<q>]+','<q>', pred_str)
             pred_str = re.sub(r' [<q>]+','<q>', pred_str)

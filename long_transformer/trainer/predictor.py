@@ -228,8 +228,8 @@ class Translator(object):
                 .replace(f' {self.split_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').replace(self.split_, '')
             pred_str = re.sub(r'[\[unused]+[1-9]+[\]]+','<q>', pred_str)
             pred_str = re.sub(r'[<q>]+','<q>', pred_str)
-            pred_str = re.sub(r' [<q>]+','<q>', pred_str)
-            pred_str.strip('<q>').strip()
+            pred_str = re.sub(r' [<q>]+','', pred_str)
+            pred_str.strip().strip('<q>').strip()
             gold_str = gold.strip()
             if(self.args.recall_eval):
                 _pred_str = ''

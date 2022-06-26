@@ -3,7 +3,7 @@ mode: test
 
 bert_data_path: ./abs_bert_data_shards/multi_news_abs.bert_data
 model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/part_3
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2/part_2
 temp_dir: ./temp
 
 model_config_path: model_config.yaml

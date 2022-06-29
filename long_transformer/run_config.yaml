@@ -24,7 +24,7 @@ batch_size: 1000
 test_batch_size: 200
 
 max_pos: 512
-max_position_embeddings: 512
+max_position_embeddings: 1024
 use_interval: True
 
 # hyperparameters

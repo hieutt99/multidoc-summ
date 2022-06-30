@@ -47,7 +47,7 @@ max_grad_norm: 0
 save_checkpoint_steps: 1000
 accum_count: 5
 report_every: 100
-train_steps: 25000
+train_steps: 40000
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1

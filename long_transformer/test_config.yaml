@@ -11,7 +11,7 @@ checkpoint: null
 
 
 train_from: null
-test_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/model_step_40000.pt
+test_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/model_step_24000.pt
 log_file: ./logs/model_log
 
 block_trigram: True
@@ -23,7 +23,7 @@ batch_size: 500
 test_batch_size: 2500
 
 max_pos: 512
-max_position_embeddings: 800
+max_position_embeddings: 512
 use_interval: True
 
 # hyperparameters

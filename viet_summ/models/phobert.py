@@ -99,16 +99,16 @@ class BasicViTransformerSentenceGeneration(nn.Module):
             self.bert.train()
         self.bert.embeddings.register_buffer("position_ids", torch.arange(args.max_position_embeddings).expand((1, -1)))
             
-        if(args.max_position_embeddings>258):
+        if(args.max_position_embeddings>512):
+            my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
+            my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
+            my_pos_embeddings.weight.data[512:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
+            self.bert.embeddings.position_embeddings = my_pos_embeddings
 
-            self.bert.embeddings.position_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
+        # self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
+        # self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
 
-        self.bert.embeddings.token_type_embeddings = nn.Embedding(2, self.bert.config.hidden_size)
-
-        self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
-        self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
-
-        tgt_embeddings = nn.Embedding(args.vocab_size, args.d_model, padding_idx=args.padding_idx)
+        tgt_embeddings = nn.Embedding(args.vocab_size, args.d_model, padding_idx=0)
         tgt_embeddings.weight = copy.deepcopy(self.bert.embeddings.word_embeddings.weight)
 
         self.decoder = TransformerDecoder(
@@ -121,11 +121,25 @@ class BasicViTransformerSentenceGeneration(nn.Module):
         self.vocab_size = args.vocab_size
         self.args = args
 
+        for module in self.decoder.modules():
+            if isinstance(module, (nn.Linear, nn.Embedding)):
+                module.weight.data.normal_(mean=0.0, std=0.02)
+            elif isinstance(module, nn.LayerNorm):
+                module.bias.data.zero_()
+                module.weight.data.fill_(1.0)
+            if isinstance(module, nn.Linear) and module.bias is not None:
+                module.bias.data.zero_()
+        for p in self.generator.parameters():
+            if p.dim() > 1:
+                nn.init.xavier_uniform_(p)
+            else:
+                p.data.zero_()
+
     def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             token_type_ids=segs, return_dict=False)
-        
+
         dec_state = self.decoder.init_decoder_state(src, top_vec)
         decoder_outputs, state = self.decoder(tgt[:, :-1], top_vec, dec_state)
         return decoder_outputs, None

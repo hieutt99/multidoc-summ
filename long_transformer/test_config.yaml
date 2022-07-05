@@ -1,9 +1,9 @@
 task: abs
 mode: test
 
-bert_data_path: ./abs_bert_data_shards/multi_news_abs.bert_data
+bert_data_path: ./abs_bert_data_shards_filtered/multi_news_abs.bert_data
 model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/part_1
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/part_filtered_1
 temp_dir: ./temp
 
 model_config_path: model_config.yaml

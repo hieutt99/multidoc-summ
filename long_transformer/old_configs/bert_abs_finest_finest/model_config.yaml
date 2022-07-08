@@ -11,7 +11,7 @@ num_encoder_blocks: 2
 num_decoder_blocks: 2
 layer_norm_eps: 1.0e-6
 d_ff: 2048
-max_position_embeddings: 1024
+max_position_embeddings: 512
 
 dec_layers: 6
 dec_hidden_size: 768
@@ -19,8 +19,8 @@ dec_heads: 8
 dec_ff_size: 2048
 dec_dropout: 0.2
 
-# bert_model: bert-base-cased
-bert_model: allenai/led-base-16384
+bert_model: bert-base-cased
+# bert_model: allenai/led-base-16384
 type_doc_size: 2
 
 # bert_config:

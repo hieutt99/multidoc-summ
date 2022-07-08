@@ -1,16 +1,16 @@
 task: abs
 mode: train
 
-bert_data_path: ./abs_bert_data_shards/multi_news_abs.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/
+bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
 checkpoint: null
 
 
-# train_from: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/model_step_25000.pt
+# train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/model_step_25000.pt
 train_from: null
 test_from: null
 log_file: ./logs/model_log

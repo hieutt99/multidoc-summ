@@ -1,7 +1,9 @@
 import collections
+from tokenize import Special
 import unicodedata
 from io import open
 from others.logging import logger
+from tokenizer.special_tokens import SpecialTokens
 from tokenizers import BertWordPieceTokenizer
 from transformers import AutoTokenizer
 
@@ -13,15 +15,25 @@ TOKENIZER_MAP = {
     "basic_ext": "bert-base-cased", 
     "basic_abs": "bert-base-cased", 
     "vi_basic_ext": "vinai/phobert-base",
-    "vi_basic_abs": "vinai/phobert-base"
+    "vi_basic_abs": "vinai/phobert-base",
+    "led_abs": "allenai/led-base-16384"
 }
 
 def build_tokenizer(args):
-    return AutoTokenizer.from_pretrained(TOKENIZER_MAP[args.model_config.model_name], 
+    tokenizer =  AutoTokenizer.from_pretrained(TOKENIZER_MAP[args.model_config.model_name], 
         cache_dir=args.temp_dir,
         use_fast=False,
         do_basic_tokenize=False,
         )
+
+    tokenizer.add_special_tokens({
+        'bos_token':SpecialTokens.bos_token, 
+        'eos_token':SpecialTokens.eos_token,
+        'sep_token':SpecialTokens.sep_token,
+        'cls_token':SpecialTokens.cls_token,
+        'additional_special_tokens':SpecialTokens.additional_special_tokens
+    })
+    return tokenizer
 
 
 

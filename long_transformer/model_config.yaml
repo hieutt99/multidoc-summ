@@ -1,7 +1,7 @@
 
 
-model_name: basic_abs
-vocab_size: null
+model_name: led_abs
+vocab_size: 50265
 freeze_bert: False
 d_model: 768
 num_heads: 8

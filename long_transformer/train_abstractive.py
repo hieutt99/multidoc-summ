@@ -183,10 +183,10 @@ def validate(args, device_id, pt, step):
     tokenizer = build_tokenizer(args)
     args.model_config.vocab_size = tokenizer.vocab_size
     vocab = tokenizer.get_vocab()
-    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+    symbols = {'BOS': vocab[SpecialTokens.bos_token], 'EOS': vocab[SpecialTokens.eos_token],
                'PAD': vocab[SpecialTokens.pad_token]}
 
-    model = build_model(args.model_config, device, checkpoint)
+    model = build_model(args.model_config, device, checkpoint, tokenizer)
     model.eval()
 
     valid_iter = dataloader.Dataloader(args, load_dataset(args, 'valid', shuffle=False),
@@ -216,10 +216,10 @@ def test_abs(args, device_id, pt, step):
     tokenizer = build_tokenizer(args)
     args.model_config.vocab_size = tokenizer.vocab_size
     vocab = tokenizer.get_vocab()
-    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+    symbols = {'BOS': vocab[SpecialTokens.bos_token], 'EOS': vocab[SpecialTokens.eos_token],
                'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.tgt_sent_split]}
 
-    model = build_model(args.model_config, device, checkpoint)
+    model = build_model(args.model_config, device, checkpoint, tokenizer)
     model.eval()
 
     test_iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
@@ -246,10 +246,10 @@ def test_text_abs(args, device_id, pt, step):
     tokenizer = build_tokenizer(args)
     args.model_config.vocab_size = tokenizer.vocab_size
     vocab = tokenizer.get_vocab()
-    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+    symbols = {'BOS': vocab[SpecialTokens.bos_token], 'EOS': vocab[SpecialTokens.eos_token],
                 'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.tgt_sent_split]}
 
-    model = build_model(args.model_config, device, checkpoint)
+    model = build_model(args.model_config, device, checkpoint, tokenizer)
     model.eval()
 
     test_iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
@@ -321,10 +321,10 @@ def train_abs_single(args, device_id):
     tokenizer = build_tokenizer(args)
     args.model_config.vocab_size = tokenizer.vocab_size
     vocab = tokenizer.get_vocab()
-    symbols = {'BOS': vocab[SpecialTokens.tgt_bos], 'EOS': vocab[SpecialTokens.tgt_eos],
+    symbols = {'BOS': vocab[SpecialTokens.bos_token], 'EOS': vocab[SpecialTokens.eos_token],
                'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.tgt_sent_split]}
 
-    model = build_model(args.model_config, device, checkpoint)
+    model = build_model(args.model_config, device, checkpoint, tokenizer)
     if (args.sep_optim):
         optim_bert = train_builder.build_optim_bert(args, model, checkpoint)
         optim_dec = train_builder.build_optim_dec(args, model, checkpoint)

@@ -59,15 +59,15 @@ class Translator(object):
         self.generator = self.model.generator
         self.vocab = vocab
         self.symbols = symbols
-        self.start_token = symbols['BOS']
-        self.end_token = symbols['EOS']
-        self.pad_token = symbols['PAD']
-        self.split_token = symbols['EOQ']
+        self.start_token = self.vocab.bos_token_id
+        self.end_token = self.vocab.eos_token_id
+        self.pad_token = self.vocab.pad_token_id
+        self.split_token = self.vocab.additional_special_tokens_ids[0]
 
-        self.start_ = self.vocab._convert_id_to_token(self.start_token)
-        self.end_ = self.vocab._convert_id_to_token(self.end_token)
-        self.pad_ = self.vocab._convert_id_to_token(self.pad_token)
-        self.split_ = self.vocab._convert_id_to_token(self.split_token)
+        self.start_ = self.vocab.bos_token
+        self.end_ = self.vocab.eos_token
+        self.pad_ = self.vocab.pad_token
+        self.split_ = self.vocab.additional_special_tokens[0]
         # print(self.start_)
         # print(self.end_)
         # print(self.pad_)
@@ -118,8 +118,10 @@ class Translator(object):
         translations = []
         for b in range(batch_size):
             # pred_sents = self.vocab.convert_ids_to_tokens([int(n) for n in preds[b][0]])
-            pred_sents = [self.vocab._convert_id_to_token(int(n)) for n in preds[b][0]]
-            pred_sents = ' '.join(pred_sents).replace(' ##','')
+            # pred_sents = [self.vocab._convert_id_to_token(int(n)) for n in preds[b][0]]
+            pred_sents = self.vocab.decode(preds[b][0], skip_special_tokens=False)
+            # pred_sents = ' '.join(pred_sents).replace(' ##','')
+            pred_sents = ' '.join(pred_sents)
             gold_sent = ' '.join(tgt_str[b].split())
             # translation = Translation(fname[b],src[:, b] if src is not None else None,
             #                           src_raw, pred_sents,
@@ -127,7 +129,9 @@ class Translator(object):
             #                           gold_score[b])
             # src = self.spm.DecodeIds([int(t) for t in translation_batch['batch'].src[0][5] if int(t) != len(self.spm)])
             # raw_src = [self.vocab.ids_to_tokens[int(t)] for t in src[b]][:500]
-            raw_src = [self.vocab._convert_id_to_token(int(t)) for t in src[b]][:500]
+
+            # raw_src = [self.vocab._convert_id_to_token(int(t)) for t in src[b]][:500]
+            raw_src = self.vocab.decode(src[b], skip_special_tokens=False)[:500]
             raw_src = ' '.join(raw_src)
             translation = (pred_sents, gold_sent, raw_src)
             # translation = (pred_sents[0], gold_sent)
@@ -172,7 +176,7 @@ class Translator(object):
                     # thay doi do bert base cased khong su dung token unused0
                     # pred_str = pred.replace('[unused0]', '').replace('[unused3]', '').replace('[PAD]', '').replace('[unused1]', '').replace(r' +', ' ').replace(' [unused2] ', '<q>').replace('[unused2]', '').strip()
                     # pred_str = pred.replace('[unused4]', '').replace('[unused2]', '').replace('[PAD]', '').replace('[unused1]', '').replace(r' +', ' ').replace(' [unused3] ', '<q>').replace('[unused3]', '').strip()
-                    pred_str = pred.strip().replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
+                    pred_str = pred.strip().replace(f' {self.split_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
                     gold_str = gold.strip()
                     if(self.args.recall_eval):
                         _pred_str = ''
@@ -226,10 +230,12 @@ class Translator(object):
             # print(pred)
             pred_str = pred.strip()\
                 .replace(f' {self.split_} ', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').replace(self.split_, '')
+            
             pred_str = re.sub(r'[\[unused]+[1-9]+[\]]+','<q>', pred_str)
             pred_str = re.sub(r'[<q>]+','<q>', pred_str)
             pred_str = re.sub(r' [<q>]+','', pred_str)
             pred_str.strip().strip('<q>').strip()
+            
             gold_str = gold.strip()
             if(self.args.recall_eval):
                 _pred_str = ''
@@ -405,8 +411,11 @@ class Translator(object):
                         fail = False
                         words = [int(w) for w in alive_seq[i]]
                         # words = [self.vocab.ids_to_tokens[w] for w in words]
-                        words = [self.vocab._convert_id_to_token(w) for w in words]
-                        words = ' '.join(words).replace(' ##','').split()
+                        # words = [self.vocab._convert_id_to_token(w) for w in words]
+
+                        words = self.vocab.decode(words, skip_special_tokens=False, clean_up_tokenization_spaces=True)
+                        # words = ' '.join(words).replace(' ##','').split()
+                        words = words.split()
                         if(len(words)<=3):
                             continue
                         trigrams = [(words[i-1],words[i],words[i+1]) for i in range(1,len(words)-1)]

@@ -96,8 +96,7 @@ class LEDBasicSentenceGenerationModel(nn.Module):
         # self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
         # self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
 
-        tgt_embeddings = nn.Embedding(args.vocab_size, args.d_model, padding_idx=tokenizer.pad_token_id)
-        tgt_embeddings.weight = copy.deepcopy(self.bert.embeddings.word_embeddings.weight)
+        tgt_embeddings = self.bert.shared
 
         self.decoder = TransformerDecoder(
             args.dec_layers,

@@ -197,7 +197,7 @@ class DataIterator(object):
     def preprocess(self, ex, is_test):
         src = ex['src']
         tgt_end_id = ex['tgt'][-1]
-        tgt = ex['tgt'][:self.args.max_tgt_len][:-1]+[tgt_end_id]
+        tgt = ex['tgt'][:self.args.max_tgt_len][:-1] + [tgt_end_id]
         src_sent_labels = ex['src_sent_labels']
         segs = ex['segs']
         glob_mask = ex['glob_mask']

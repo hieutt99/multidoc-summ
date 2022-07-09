@@ -1,3 +1,6 @@
+import copy
+from models.basic_models import get_generator
+from models.modules.transformer_base import TransformerDecoder
 import torch.nn as nn 
 import torch 
 from transformers import LEDModel
@@ -30,15 +33,15 @@ class LEDBasicSentenceClassificationModel(nn.Module):
     def __init__(self, args, **kwargs):
         super(LEDBasicSentenceClassificationModel, self).__init__(**kwargs)
 
-        self.led_model = LEDModel.from_pretrained(args.bert_model)
-        self.led_model.train()
+        self.bert = LEDModel.from_pretrained(args.bert_model)
+        self.bert.train()
         
         self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
 
         self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
 
-        self.led_model._init_weights(self.classifer.dense)
-        self.led_model._init_weights(self.classifer.out_proj)
+        self.bert._init_weights(self.classifer.dense)
+        self.bert._init_weights(self.classifer.out_proj)
         # self.classifier = nn.Linear(args.d_model, 1)
         # self.dropout = nn.Dropout(args.dropout)
 
@@ -47,7 +50,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
     def forward(self, src, segs, glob_mask, clss, mask_src, mask_cls):
         
-        led_outputs = self.led_model(input_ids=src,
+        led_outputs = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             # token_type_ids=segs, 
                             global_attention_mask=glob_mask,
@@ -68,10 +71,11 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         return sent_scores, mask_cls
 
 class LEDBasicSentenceGenerationModel(nn.Module):
-    def __init__(self, args, **kwargs):
-        super(BasicTransformerSentenceGeneration, self).__init__()
+    def __init__(self, args, tokenizer=None, **kwargs):
+        super(LEDBasicSentenceGenerationModel, self).__init__()
         
-        self.bert = build_bert(args.bert_model) 
+        self.bert = LEDModel.from_pretrained(args.bert_model)
+        self.bert.resize_token_embeddings(len(tokenizer))
         if args.freeze_bert:
             self.bert.eval()
         else: 

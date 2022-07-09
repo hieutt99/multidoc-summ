@@ -336,13 +336,23 @@ class Translator(object):
         assert not self.dump_beam
 
         beam_size = self.beam_size
+
         batch_size = batch.batch_size
         src = batch.src
         segs = batch.segs
         mask_src = batch.mask_src
 
-        src_features, _ = self.model.bert(input_ids=src, token_type_ids=segs, 
-                                    attention_mask=mask_src, return_dict=False)
+        if self.model.model_name.startswith("basic"):
+            src_features, _ = self.model.bert(input_ids=src, token_type_ids=segs, 
+                                        attention_mask=mask_src, return_dict=False)
+        elif self.model.model_name.startswith("led"):
+            glob_mask = batch.glob_mask
+            led_outputs = self.bert(input_ids=src,
+                            attention_mask=mask_src,
+                            # token_type_ids=segs, 
+                            global_attention_mask=glob_mask,
+                            return_dict=False)
+            src_features = led_outputs[0]
 
         dec_states = self.model.decoder.init_decoder_state(src, src_features, with_cache=True)
         device = src_features.device

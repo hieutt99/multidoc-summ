@@ -1,4 +1,5 @@
 import copy
+from glob import glob
 from models.basic_models import get_generator
 from models.modules.transformer_base import TransformerDecoder
 import torch.nn as nn 
@@ -32,6 +33,8 @@ class LEDClassificationHead(nn.Module):
 class LEDBasicSentenceClassificationModel(nn.Module):
     def __init__(self, args, **kwargs):
         super(LEDBasicSentenceClassificationModel, self).__init__(**kwargs)
+
+        self.model_name = args.model_name
 
         self.bert = LEDModel.from_pretrained(args.bert_model)
         self.bert.train()
@@ -71,8 +74,10 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         return sent_scores, mask_cls
 
 class LEDBasicSentenceGenerationModel(nn.Module):
-    def __init__(self, args, tokenizer=None, **kwargs):
+    def __init__(self, args, tokenizer, **kwargs):
         super(LEDBasicSentenceGenerationModel, self).__init__()
+
+        self.model_name = args.model_name
         
         self.bert = LEDModel.from_pretrained(args.bert_model)
         self.bert.resize_token_embeddings(len(tokenizer))
@@ -80,18 +85,18 @@ class LEDBasicSentenceGenerationModel(nn.Module):
             self.bert.eval()
         else: 
             self.bert.train()
-        self.bert.embeddings.register_buffer("position_ids", torch.arange(args.max_position_embeddings).expand((1, -1)))
+        # self.bert.embeddings.register_buffer("position_ids", torch.arange(args.max_position_embeddings).expand((1, -1)))
             
-        if(args.max_position_embeddings>512):
-            my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
-            my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
-            my_pos_embeddings.weight.data[512:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
-            self.bert.embeddings.position_embeddings = my_pos_embeddings
+        # if(args.max_position_embeddings>512):
+        #     my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
+        #     my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
+        #     my_pos_embeddings.weight.data[512:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
+        #     self.bert.embeddings.position_embeddings = my_pos_embeddings
 
         # self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
         # self.doc_type_embeddings = nn.Embedding(args.type_doc_size, args.d_model)
 
-        tgt_embeddings = nn.Embedding(args.vocab_size, args.d_model, padding_idx=0)
+        tgt_embeddings = nn.Embedding(args.vocab_size, args.d_model, padding_idx=tokenizer.pad_token_id)
         tgt_embeddings.weight = copy.deepcopy(self.bert.embeddings.word_embeddings.weight)
 
         self.decoder = TransformerDecoder(
@@ -118,10 +123,14 @@ class LEDBasicSentenceGenerationModel(nn.Module):
             else:
                 p.data.zero_()
 
-    def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls):
-        top_vec, _ = self.bert(input_ids=src,
+    def forward(self, src, tgt, segs, mask_src, clss, mask_cls, glob_mask):
+        
+        led_outputs = self.bert(input_ids=src,
                             attention_mask=mask_src,
-                            token_type_ids=segs, return_dict=False)
+                            # token_type_ids=segs, 
+                            global_attention_mask=glob_mask,
+                            return_dict=False)
+        top_vec = led_outputs[0]
 
         dec_state = self.decoder.init_decoder_state(src, top_vec)
         decoder_outputs, state = self.decoder(tgt[:, :-1], top_vec, dec_state)

@@ -20,6 +20,8 @@ def get_generator(vocab_size, dec_hidden_size):
 class BasicTransformerSentenceGeneration(nn.Module):
     def __init__(self, args, **kwargs):
         super(BasicTransformerSentenceGeneration, self).__init__()
+
+        self.model_name = args.model_name
         
         self.bert = build_bert(args.bert_model) 
         if args.freeze_bert:
@@ -64,7 +66,7 @@ class BasicTransformerSentenceGeneration(nn.Module):
             else:
                 p.data.zero_()
 
-    def forward(self, src, tgt, segs, clss, mask_src, mask_tgt, mask_cls):
+    def forward(self, src, tgt, segs, mask_src, clss, mask_tgt, mask_cls):
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             token_type_ids=segs, return_dict=False)
@@ -76,6 +78,8 @@ class BasicTransformerSentenceGeneration(nn.Module):
 class BasicTransformerSentenceClassification(nn.Module):
     def __init__(self, args, **kwargs):
         super(BasicTransformerSentenceClassification, self).__init__()
+
+        self.model_name = args.model_name
 
         self.bert = build_bert(args.bert_model) 
         if args.freeze_bert:

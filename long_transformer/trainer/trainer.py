@@ -1,6 +1,7 @@
 import os
 
 import numpy as np
+from pyrsistent import l
 import torch
 from tensorboardX import SummaryWriter
 from attr import asdict
@@ -222,7 +223,12 @@ class Trainer(object):
             mask_tgt = batch.mask_tgt
             mask_cls = batch.mask_cls
 
-            outputs, scores = self.model(src, tgt, segs, clss, mask_src, mask_tgt, mask_cls)
+            if self.model.model_name.startswith("basic"):
+                outputs, scores = self.model(src, tgt, segs, clss, mask_src, mask_tgt, mask_cls)
+            elif self.model.model_name.startswith("led"):
+                glob_mask = batch.glob_mask
+                outputs, scores = self.model(src, tgt, segs, mask_src, clss, mask_src, clss, mask_cls, glob_mask)
+
             batch_stats = self.loss.sharded_compute_loss(batch, outputs, self.args.generator_shard_size, normalization)
 
             batch_stats.n_docs = int(src.size(0))

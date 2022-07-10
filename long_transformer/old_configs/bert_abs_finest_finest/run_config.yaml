@@ -2,8 +2,8 @@ task: abs
 mode: train
 
 bert_data_path: ./abs_bert_data_shards/multi_news_abs.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/
+model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models_p2_2/
+result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models_p2_2/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml

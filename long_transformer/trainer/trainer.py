@@ -227,7 +227,7 @@ class Trainer(object):
                 outputs, scores = self.model(src, tgt, segs, clss, mask_src, mask_tgt, mask_cls)
             elif self.model.model_name.startswith("led"):
                 glob_mask = batch.glob_mask
-                outputs, scores = self.model(src, tgt, segs, mask_src, clss, mask_src, clss, mask_cls, glob_mask)
+                outputs, scores = self.model(src, tgt, segs, mask_src, clss, mask_cls, glob_mask)
 
             batch_stats = self.loss.sharded_compute_loss(batch, outputs, self.args.generator_shard_size, normalization)
 

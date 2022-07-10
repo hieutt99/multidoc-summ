@@ -1,18 +1,17 @@
 task: abs
-mode: train
+mode: validate
 
-bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
+bert_data_path: ./vietnews_bert_data_shards/vietnews.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models_abs/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/vietnews_saved_models_abs/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
 checkpoint: null
 
 
-# train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/model_step_25000.pt
 train_from: null
-test_from: null
+test_from: ""
 log_file: ./logs/model_log
 
 block_trigram: True
@@ -21,10 +20,10 @@ report_rouge: True
 
 # general
 batch_size: 500
-test_batch_size: 200
+test_batch_size: 1000
 
-max_pos: 1024
-max_position_embeddings: 1024
+max_pos: 512
+max_position_embeddings: 512
 use_interval: True
 
 # hyperparameters
@@ -33,7 +32,7 @@ param_init: 0
 param_init_glorot: True
 ## optimizer
 optim: adam
-lr: 2.0e-3
+lr: 1.0e-4
 lr_bert: 2.0e-3
 lr_dec: 0.2
 beta1: 0.9
@@ -44,20 +43,20 @@ warmup_steps_dec: 10000
 max_grad_norm: 0
 
 # train phase
-save_checkpoint_steps: 1000
-accum_count: 5
+save_checkpoint_steps: 4000
+accum_count: 2
 report_every: 100
-train_steps: 25000
+train_steps: 50000
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1
 generator_shard_size: 32
 alpha: 0.6 
 beam_size: 5
-min_length: 150
-max_length: 800
-max_tgt_len: 800 
-ext_predict_nsents: 10
+min_length: 30
+max_length: 40
+max_tgt_len: 200 
+ext_predict_nsents: 4
 
 # gpu
 visible_gpus: '0'
@@ -65,8 +64,9 @@ gpu_ranks: '0'
 world_size: 1
 seed: 666
 
-
 test_all: true
 
 load_from_extractive: ""
 sep_optim: True
+
+test_start_from: -1

@@ -1,9 +1,9 @@
 task: abs
 mode: validate
 
-bert_data_path: ./abs_bert_data_shards_filtered/multi_news_abs.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/
+bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -19,11 +19,11 @@ report_rouge: True
 
 
 # general
-batch_size: 5000
+batch_size: 2000
 test_batch_size: 2000
 
-max_pos: 512
-max_position_embeddings: 512
+max_pos: 1024
+max_position_embeddings: 1024
 use_interval: True
 
 # hyperparameters

@@ -99,10 +99,10 @@ class BasicViTransformerSentenceGeneration(nn.Module):
             self.bert.train()
         self.bert.embeddings.register_buffer("position_ids", torch.arange(args.max_position_embeddings).expand((1, -1)))
             
-        if(args.max_position_embeddings>512):
+        if(args.max_position_embeddings>256):
             my_pos_embeddings = nn.Embedding(args.max_position_embeddings, self.bert.config.hidden_size)
-            my_pos_embeddings.weight.data[:512] = self.bert.embeddings.position_embeddings.weight.data
-            my_pos_embeddings.weight.data[512:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
+            my_pos_embeddings.weight.data[:256] = self.bert.embeddings.position_embeddings.weight.data
+            my_pos_embeddings.weight.data[256:] = self.bert.embeddings.position_embeddings.weight.data[-1][None,:].repeat(args.max_position_embeddings-512,1)
             self.bert.embeddings.position_embeddings = my_pos_embeddings
 
         # self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)

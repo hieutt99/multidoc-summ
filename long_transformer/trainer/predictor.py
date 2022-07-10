@@ -347,7 +347,7 @@ class Translator(object):
                                         attention_mask=mask_src, return_dict=False)
         elif self.model.model_name.startswith("led"):
             glob_mask = batch.glob_mask
-            led_outputs = self.bert(input_ids=src,
+            led_outputs = self.model.bert(input_ids=src,
                             attention_mask=mask_src,
                             # token_type_ids=segs, 
                             global_attention_mask=glob_mask,

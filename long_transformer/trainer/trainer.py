@@ -198,7 +198,12 @@ class Trainer(object):
                 mask_tgt = batch.mask_tgt
                 mask_cls = batch.mask_cls
 
-                outputs, _ = self.model(src, tgt, segs, clss, mask_src, mask_tgt, mask_cls)
+                # outputs, _ = self.model(src, tgt, segs, clss, mask_src, mask_tgt, mask_cls)
+                if self.model.model_name.startswith("basic"):
+                    outputs, scores = self.model(src, tgt, segs, clss, mask_src, mask_tgt, mask_cls)
+                elif self.model.model_name.startswith("led"):
+                    glob_mask = batch.glob_mask
+                    outputs, scores = self.model(src, tgt, segs, mask_src, clss, mask_cls, glob_mask)
 
                 batch_stats = self.loss.monolithic_compute_loss(batch, outputs)
                 stats.update(batch_stats)

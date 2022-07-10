@@ -8,7 +8,7 @@ MODEL_MAP = {
     'led_abs': LEDBasicSentenceGenerationModel, 
     'led_ext' : LEDBasicSentenceClassificationModel,
 
-    'vi_basic_ext': BasicViTransformerSentenceClassification,
-    'vi_basic_abs': BasicViTransformerSentenceGeneration,
+    'basic_vi_ext': BasicViTransformerSentenceClassification,
+    'basic_vi_abs': BasicViTransformerSentenceGeneration,
 }
 

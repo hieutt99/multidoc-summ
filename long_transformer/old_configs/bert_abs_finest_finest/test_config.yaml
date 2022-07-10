@@ -1,9 +1,9 @@
 task: abs
 mode: test
 
-bert_data_path: ./abs_bert_data_shards_filtered/multi_news_abs.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertabs/saved_models_p2_2/part_filtered_1
+bert_data_path: ./abs_bert_data_shards/multi_news_abs.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -52,8 +52,8 @@ generator_shard_size: 32
 alpha: 0.6 
 beam_size: 5
 min_length: 150
-max_length: 800
-max_tgt_len: 1024 
+max_length: 600
+max_tgt_len: 600 
 ext_predict_nsents: 20
 
 # gpu

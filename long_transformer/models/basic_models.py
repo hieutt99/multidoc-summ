@@ -18,7 +18,7 @@ def get_generator(vocab_size, dec_hidden_size):
     return generator
 
 class BasicTransformerSentenceGeneration(nn.Module):
-    def __init__(self, args, **kwargs):
+    def __init__(self, args, tokenizer, **kwargs):
         super(BasicTransformerSentenceGeneration, self).__init__()
 
         self.model_name = args.model_name

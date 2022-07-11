@@ -67,9 +67,13 @@ class BasicTransformerSentenceGeneration(nn.Module):
                 p.data.zero_()
 
     def forward(self, src, tgt, segs, mask_src, clss, mask_tgt, mask_cls):
+        # top_vec, _ = self.bert(input_ids=src,
+        #                     attention_mask=mask_src,
+        #                     token_type_ids=segs, return_dict=False)
+
         top_vec, _ = self.bert(input_ids=src,
                             attention_mask=mask_src,
-                            token_type_ids=segs, return_dict=False)
+                            return_dict=False)
 
         dec_state = self.decoder.init_decoder_state(src, top_vec)
         decoder_outputs, state = self.decoder(tgt[:, :-1], top_vec, dec_state)

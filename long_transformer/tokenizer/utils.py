@@ -14,8 +14,8 @@ from transformers import AutoTokenizer
 TOKENIZER_MAP = {
     "basic_ext": "bert-base-cased", 
     "basic_abs": "bert-base-cased", 
-    "vi_basic_ext": "vinai/phobert-base",
-    "vi_basic_abs": "vinai/phobert-base",
+    "basic_vi_ext": "vinai/phobert-base",
+    "basic_vi_abs": "vinai/phobert-base",
     "led_abs": "allenai/led-base-16384"
 }
 

@@ -1,6 +1,6 @@
 
 
-model_name: vi_basic_abs
+model_name: basic_vi_abs
 vocab_size: null
 freeze_bert: False
 d_model: 768

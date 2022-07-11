@@ -31,7 +31,11 @@ class Batch(object):
             tgt = torch.tensor(self._pad(pre_tgt, 0))
 
             segs = torch.tensor(self._pad(pre_segs, 0))
-            glob_mask = torch.tensor(self._pad(pre_glob_mask, 0))
+            # in case we not gonna use glob_mask
+            if pre_glob_mask[0]:
+                glob_mask = torch.tensor(self._pad(pre_glob_mask, 0))
+            else:
+                glob_mask = torch.tensor(0)
             mask_src = ~ (src == 0)
             mask_src = torch.where(mask_src == True, 1, 0)
             mask_tgt = ~ (tgt == 0)
@@ -200,7 +204,6 @@ class DataIterator(object):
         tgt = ex['tgt'][:self.args.max_tgt_len][:-1] + [tgt_end_id]
         src_sent_labels = ex['src_sent_labels']
         segs = ex['segs']
-        glob_mask = ex['glob_mask']
         if(not self.args.use_interval):
             segs=[0]*len(segs)
         clss = ex['clss']
@@ -210,11 +213,16 @@ class DataIterator(object):
         end_id = [src[-1]]
         src = src[:-1][:self.args.max_pos - 1] + end_id
         segs = segs[:self.args.max_pos]
-        glob_mask = glob_mask[:self.args.max_pos]
         max_sent_id = bisect.bisect_left(clss, self.args.max_pos)
         src_sent_labels = src_sent_labels[:max_sent_id]
         clss = clss[:max_sent_id]
         # src_txt = src_txt[:max_sent_id]
+
+        if 'glob_mask' in ex.keys():
+            glob_mask = ex['glob_mask']
+            glob_mask = glob_mask[:self.args.max_pos]
+        else:
+            glob_mask = None
 
 
 

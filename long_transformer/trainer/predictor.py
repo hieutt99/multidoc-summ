@@ -224,6 +224,8 @@ class Translator(object):
         save_pred = ''
         save_gold = ''
         save_src = ''
+
+        tmp = []
         for trans in translations:
             pred, gold, src = trans
             # pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
@@ -249,11 +251,11 @@ class Translator(object):
                     else:
                         gap = can_gap
                         _pred_str = can_pred_str
-
+            tmp.append(len(pred_str.split()))
             save_pred += f'{pred_str}\n'
             save_gold += f'{gold_str}\n'
             save_src += f'{src.strip()}\n'
-        return save_pred, save_gold, save_src, len(translations)
+        return save_pred, save_gold, save_src, len(translations), sum(tmp)/len(tmp)
 
     def translate(self,
                   data_iter, step,
@@ -276,7 +278,7 @@ class Translator(object):
 
             pbar = tqdm(list(range(len(futures))))
             for future in as_completed(futures):
-                save_pred, save_gold, save_src, c = future.result()
+                save_pred, save_gold, save_src, c, av = future.result()
                 self.can_out_file.write(save_pred)
                 self.gold_out_file.write(save_gold)
                 self.src_out_file.write(save_src)
@@ -285,7 +287,7 @@ class Translator(object):
                 self.gold_out_file.flush()
                 self.src_out_file.flush()
                 pbar.update(1)
-                pbar.set_postfix(c=c)
+                pbar.set_postfix(c=c, avg=av)
 
             pbar.close()
 

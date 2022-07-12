@@ -31,6 +31,7 @@ def build_tokenizer(args):
         'eos_token':SpecialTokens.eos_token,
         'sep_token':SpecialTokens.sep_token,
         'cls_token':SpecialTokens.cls_token,
+        'pad_token':SpecialTokens.pad_token, 
         'additional_special_tokens':SpecialTokens.additional_special_tokens
     })
     return tokenizer

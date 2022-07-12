@@ -129,7 +129,7 @@ class LEDBasicSentenceGenerationModel(nn.Module):
         led_outputs = self.bert(input_ids=src,
                             attention_mask=mask_src,
                             # token_type_ids=segs, 
-                            global_attention_mask=glob_mask,
+                            # global_attention_mask=glob_mask,
                             return_dict=False)
         top_vec = led_outputs[0]
 

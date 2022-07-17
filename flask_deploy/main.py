@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_ngrok import run_with_ngrok
-from predictor import build_predictor
+from model.predictor import build_predictor
 from views import SummaryView
 
 
@@ -16,6 +16,7 @@ def home():
     return '<h1>test string</h1>'
 
 
-app.add_url_rule('/api/v1/summarization/', SummaryView.as_view('summary_view', predictor))
-    
-app.run()
+app.add_url_rule('/api/v1/summarization/', view_func=SummaryView.as_view('summary_view', predictor), methods=['POST'])
+
+if __name__ == '__main__':
+    app.run()

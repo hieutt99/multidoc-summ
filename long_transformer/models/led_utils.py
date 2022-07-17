@@ -99,7 +99,7 @@ class LEDBasicSentenceGenerationModel(nn.Module):
         tgt_embeddings = nn.Embedding(len(tokenizer), args.d_model, padding_idx=tokenizer.pad_token_id)
         # tgt_embeddings.weight = copy.deepcopy(self.bert.shared.weight)
         # tgt_embeddings.weight = copy.deepcopy(self.bert.decoder.embed_tokens.weight)
-        tgt_embeddings.weight = self.bert.shared.weight
+        tgt_embeddings.weight = copy.deepcopy(self.bert.shared.weight)
 
         self.decoder = TransformerDecoder(
             args.dec_layers,

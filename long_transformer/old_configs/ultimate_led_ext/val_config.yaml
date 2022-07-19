@@ -22,8 +22,8 @@ report_rouge: True
 batch_size: 500
 test_batch_size: 500
 
-max_pos: 1024
-max_position_embeddings: 1024
+max_pos: 16384
+max_position_embeddings: 16384
 use_interval: True
 
 # hyperparameters

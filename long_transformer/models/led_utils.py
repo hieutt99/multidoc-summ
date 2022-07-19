@@ -36,7 +36,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
         self.model_name = args.model_name
 
-        self.bert = LEDModel.from_pretrained(args.bert_model)
+        self.bert = LEDModel.from_pretrained(args.bert_model).get_encoder()
         self.bert.train()
         
         self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)

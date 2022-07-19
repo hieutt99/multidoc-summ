@@ -22,19 +22,19 @@
 #     # pad_vid = vocab[pad_token]
 
 
-class SpecialTokens():
-    sep_token = '</s>'
-    cls_token = '<s>'
-    pad_token = '<pad>'
-    bos_token = '<s>' # 0
-    eos_token = '</s>' # 
-    additional_special_tokens = ['<ss>', '<ds>']
-
-
 # class SpecialTokens():
-#     sep_token = '[SEP]'
-#     cls_token = '[CLS]'
-#     pad_token = '[PAD]'
-#     bos_token = '[CLS]' # 0
-#     eos_token = '[SEP]' # 1
-#     additional_special_tokens = ['[unused1]', '[unused2]']
+#     sep_token = '</s>'
+#     cls_token = '<s>'
+#     pad_token = '<pad>'
+#     bos_token = '<s>' # 0
+#     eos_token = '</s>' # 
+#     additional_special_tokens = ['<ss>', '<ds>']
+
+
+class SpecialTokens():
+    sep_token = '[SEP]'
+    cls_token = '[CLS]'
+    pad_token = '[PAD]'
+    bos_token = '[CLS]' # 0
+    eos_token = '[SEP]' # 1
+    additional_special_tokens = ['[unused1]', '[unused2]']

@@ -2,15 +2,15 @@ task: ext
 mode: train
 
 bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
-result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
+model_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/
 temp_dir: ./temp
 
 model_config_path: ./old_configs/ultimate_led_ext/model_config.yaml
 checkpoint: null
 
 
-# train_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/model_step_20000.pt
+# train_from: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/model_step_20000.pt
 train_from: null
 test_from: null
 log_file: ./logs/model_log

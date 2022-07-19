@@ -16,7 +16,8 @@ TOKENIZER_MAP = {
     "basic_abs": "bert-base-cased", 
     "basic_vi_ext": "vinai/phobert-base",
     "basic_vi_abs": "vinai/phobert-base",
-    "led_abs": "allenai/led-base-16384"
+    "led_abs": "allenai/led-base-16384",
+    "led_ext": "allenai/led-base-16384",
 }
 
 def build_tokenizer(args):

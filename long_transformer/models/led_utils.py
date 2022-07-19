@@ -31,12 +31,15 @@ class LEDClassificationHead(nn.Module):
         return hidden_states
 
 class LEDBasicSentenceClassificationModel(nn.Module):
-    def __init__(self, args, **kwargs):
+    def __init__(self, args, tokenizer, **kwargs):
         super(LEDBasicSentenceClassificationModel, self).__init__(**kwargs)
 
         self.model_name = args.model_name
 
-        self.bert = LEDModel.from_pretrained(args.bert_model).get_encoder()
+        led_model = LEDModel.from_pretrained(args.bert_model).to('cpu')
+        led_model.resize_token_embeddings(len(tokenizer))
+        self.bert = led_model.get_encoder()
+        
         self.bert.train()
         
         self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
@@ -79,8 +82,10 @@ class LEDBasicSentenceGenerationModel(nn.Module):
 
         self.model_name = args.model_name
         
-        self.bert = LEDModel.from_pretrained(args.bert_model)
-        self.bert.resize_token_embeddings(len(tokenizer))
+        led_model = LEDModel.from_pretrained(args.bert_model).to('cpu')
+        led_model.resize_token_embeddings(len(tokenizer))
+        self.bert = led_model.get_encoder()
+
         if args.freeze_bert:
             self.bert.eval()
         else: 
@@ -99,7 +104,7 @@ class LEDBasicSentenceGenerationModel(nn.Module):
         tgt_embeddings = nn.Embedding(len(tokenizer), args.d_model, padding_idx=tokenizer.pad_token_id)
         # tgt_embeddings.weight = copy.deepcopy(self.bert.shared.weight)
         # tgt_embeddings.weight = copy.deepcopy(self.bert.decoder.embed_tokens.weight)
-        tgt_embeddings.weight = copy.deepcopy(self.bert.shared.weight)
+        tgt_embeddings.weight = copy.deepcopy(self.bert.embed_tokens.weight)
 
         self.decoder = TransformerDecoder(
             args.dec_layers,

@@ -22,6 +22,8 @@ from models.model_utils import build_model
 from trainer.trainer_ext import build_trainer
 from others.logging import logger, init_logger
 from utils.arguments import ModelConfig
+from tokenizer.utils import build_tokenizer
+from tokenizer.special_tokens import SpecialTokens
 
 # model_flags = ['hidden_size', 'ff_size', 'heads', 'inter_layers', 'encoder', 'ff_actv', 'use_interval', 'rnn_size']
 
@@ -162,7 +164,13 @@ def validate(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
-    model = build_model(args.model_config, device, checkpoint)
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.bos_token], 'EOS': vocab[SpecialTokens.eos_token],
+               'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.additional_special_tokens[0]]}
+
+    model = build_model(args.model_config, device, checkpoint, tokenizer)
     model.eval()
 
     valid_iter = dataloader.Dataloader(args, load_dataset(args, 'valid', shuffle=False),
@@ -185,7 +193,13 @@ def test_ext(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
-    model = build_model(args.model_config, device, checkpoint)
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.bos_token], 'EOS': vocab[SpecialTokens.eos_token],
+               'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.additional_special_tokens[0]]}
+
+    model = build_model(args.model_config, device, checkpoint, tokenizer)
     model.eval()
 
     test_iter = dataloader.Dataloader(args, load_dataset(args, 'test', shuffle=False),
@@ -273,7 +287,14 @@ def train_single_ext(args, device_id):
         return dataloader.Dataloader(args, load_dataset(args, 'train', shuffle=True), args.batch_size, device,
                                       shuffle=True, is_test=False)
 
-    model = build_model(args.model_config, device, checkpoint)
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.bos_token], 'EOS': vocab[SpecialTokens.eos_token],
+               'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.additional_special_tokens[0]]}
+
+    model = build_model(args.model_config, device, checkpoint, tokenizer)
+
     optim = train_builder.build_optim(args, model, checkpoint)
 
     logger.info(model)

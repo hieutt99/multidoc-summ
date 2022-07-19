@@ -1,7 +1,7 @@
 task: ext
 mode: test
 
-bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
+bert_data_path: ./multi_news_bert_led_ext_shards/multi_news.bert_data
 model_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/
 result_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/
 temp_dir: ./temp

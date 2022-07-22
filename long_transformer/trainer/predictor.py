@@ -239,6 +239,9 @@ class Translator(object):
             pred_str.strip().strip('<q>').strip()
             
             gold_str = gold.strip()
+
+            print(pred_str)
+            print(gold_str)
             if(self.args.recall_eval):
                 _pred_str = ''
                 gap = 1e3

@@ -36,6 +36,8 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
         self.model_name = args.model_name
 
+        # self.bert = LEDModel.from_pretrained(args.bert_model)
+
         led_model = LEDModel.from_pretrained(args.bert_model).to('cpu')
         led_model.resize_token_embeddings(len(tokenizer))
         self.bert = led_model.get_encoder()

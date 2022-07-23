@@ -23,8 +23,8 @@ report_rouge: True
 batch_size: 2000
 test_batch_size: 200
 
-max_pos: 6000
-max_position_embeddings: 6000
+max_pos: 8000
+max_position_embeddings: 8000
 use_interval: True
 
 # hyperparameters
@@ -45,7 +45,7 @@ max_grad_norm: 0
 save_checkpoint_steps: 1000
 accum_count: 5
 report_every: 100
-train_steps: 30000
+train_steps: 20000
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1

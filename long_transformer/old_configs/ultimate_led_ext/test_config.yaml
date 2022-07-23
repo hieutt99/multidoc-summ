@@ -11,7 +11,7 @@ checkpoint: null
 
 
 train_from: null
-test_from: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/model_step_3000.pt
+test_from: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/model_step_13000.pt
 log_file: ./logs/model_log
 
 block_trigram: True
@@ -20,10 +20,10 @@ report_rouge: True
 
 # general
 batch_size: 6000
-test_batch_size: 100
+test_batch_size: 6000
 
-max_pos: 6000
-max_position_embeddings: 6000
+max_pos: 8000
+max_position_embeddings: 8000
 use_interval: True
 
 # hyperparameters

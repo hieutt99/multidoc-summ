@@ -2,8 +2,8 @@ task: ext
 mode: validate
 
 bert_data_path: ./multi_news_bert_led_ext_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models_10/
-result_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models_10/
+model_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models_5/
+result_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models_5/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml

@@ -220,7 +220,13 @@ def data_gen(args, device_id, pt, step):
     args.model_config = ModelConfig(**opt)
     print(args.model_config)
 
-    model = build_model(args.model_config, device, checkpoint)
+    tokenizer = build_tokenizer(args)
+    args.model_config.vocab_size = tokenizer.vocab_size
+    vocab = tokenizer.get_vocab()
+    symbols = {'BOS': vocab[SpecialTokens.bos_token], 'EOS': vocab[SpecialTokens.eos_token],
+               'PAD': vocab[SpecialTokens.pad_token], 'EOQ':vocab[SpecialTokens.additional_special_tokens[0]]}
+
+    model = build_model(args.model_config, device, checkpoint, tokenizer)
     model.eval()
 
     temp = args.result_path 

@@ -25,14 +25,31 @@ class LEDClassificationHead(nn.Module):
     def forward(self, hidden_states: torch.Tensor):
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.dense(hidden_states)
-        hidden_states = torch.tanh(hidden_states)
+        # hidden_states = torch.tanh(hidden_states)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.out_proj(hidden_states)
         return hidden_states
 
+def shift_tokens_right(input_ids: torch.Tensor, pad_token_id: int, decoder_start_token_id: int):
+    """
+    Shift input ids one token to the right.
+    """
+    shifted_input_ids = input_ids.new_zeros(input_ids.shape)
+    shifted_input_ids[:, 1:] = input_ids[:, :-1].clone()
+    shifted_input_ids[:, 0] = decoder_start_token_id
+
+    # if pad_token_id is None:
+    #     raise ValueError("config.pad_token_id has to be defined.")
+    # replace possible -100 values in labels by `pad_token_id`
+    shifted_input_ids.masked_fill_(shifted_input_ids == -100, pad_token_id)
+
+    return shifted_input_ids
+
 class LEDBasicSentenceClassificationModel(nn.Module):
     def __init__(self, args, tokenizer, **kwargs):
         super(LEDBasicSentenceClassificationModel, self).__init__(**kwargs)
+        self.pad_token_id = tokenizer.pad_token_id
+        self.decoder_start_token_id = tokenizer.bos_token_id
 
         self.model_name = args.model_name
 
@@ -40,11 +57,15 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
         led_model = LEDModel.from_pretrained(args.bert_model).to('cpu')
         led_model.resize_token_embeddings(len(tokenizer))
-        self.bert = led_model.get_encoder()
+        self.bert = copy.deepcopy(led_model.get_encoder())
+        self.bert.layers = self.bert.layers[:3]
         
+        self.decoder = led_model.get_decoder()
+        self.decoder.layers = self.decoder.layers[:3]
+        self.decoder.embed_positions = copy.deepcopy(self.bert.embed_positions)
+
         self.bert.train()
-        
-        # self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
+        self.decoder.train()
 
         # self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
         self.classifer = LEDClassificationHead(args.d_model, 3072, 1, args.dropout)
@@ -58,18 +79,14 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         
         led_outputs = self.bert(input_ids=src,
                             attention_mask=mask_src,
-                            # token_type_ids=segs, 
                             global_attention_mask=glob_mask,
                             return_dict=False)
-        top_vec = led_outputs[0]
+        top_vec = self.decoder(
+            input_ids=shift_tokens_right(src, self.pad_token_id, self.decoder_start_token_id),
+            encoder_hidden_states=led_outputs[0], return_dict=False)[0]
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float() 
-
-        # # with cosine positional
-        # pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
-        # sents_vec = sents_vec * mask_cls[:, :, None].float()
-        # sents_vec = sents_vec + pos_emb
 
         sent_scores = self.classifer(sents_vec)
         if not self.training:

@@ -10,7 +10,7 @@ model_config_path: model_config.yaml
 checkpoint: null
 
 
-train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/model_step_6000.pt
+# train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/model_step_6000.pt
 train_from: null
 test_from: null
 log_file: ./logs/model_log
@@ -23,8 +23,8 @@ report_rouge: True
 batch_size: 300
 test_batch_size: 200
 
-max_pos: 4000
-max_position_embeddings: 4000
+max_pos: 5000
+max_position_embeddings: 5000
 use_interval: True
 
 # hyperparameters
@@ -35,7 +35,7 @@ param_init_glorot: True
 optim: adam
 lr: 2.0e-3
 lr_bert: 2.0e-4
-lr_dec: 0.2
+lr_dec: 0.02
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000

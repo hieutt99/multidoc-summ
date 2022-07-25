@@ -44,15 +44,13 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         
         self.bert.train()
         
-        self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
+        # self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
 
-        self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
+        # self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
+        self.classifer = LEDClassificationHead(args.d_model, 3072, 1, args.dropout)
 
         self.bert._init_weights(self.classifer.dense)
         self.bert._init_weights(self.classifer.out_proj)
-        # self.classifier = nn.Linear(args.d_model, 1)
-        # self.dropout = nn.Dropout(args.dropout)
-
         self.sigmoid = nn.Sigmoid()
 
 
@@ -74,7 +72,8 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         # sents_vec = sents_vec + pos_emb
 
         sent_scores = self.classifer(sents_vec)
-        sent_scores = self.sigmoid(sent_scores)
+        if not self.training:
+            sent_scores = self.sigmoid(sent_scores)
         sent_scores = sent_scores.squeeze(-1) * mask_cls.float()
         return sent_scores, mask_cls
 

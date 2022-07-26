@@ -53,19 +53,12 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
         self.model_name = args.model_name
 
-        # self.bert = LEDModel.from_pretrained(args.bert_model)
-
-        led_model = LEDModel.from_pretrained(args.bert_model).to('cpu')
-        led_model.resize_token_embeddings(len(tokenizer))
-        self.bert = copy.deepcopy(led_model.get_encoder())
-        self.bert.layers = self.bert.layers[:3]
-        
-        self.decoder = led_model.get_decoder()
-        self.decoder.layers = self.decoder.layers[:3]
-        self.decoder.embed_positions = copy.deepcopy(self.bert.embed_positions)
-
+        self.bert = LEDModel.from_pretrained(args.bert_model)
+        self.bert.resize_token_embeddings(len(tokenizer))
+        self.bert.encoder.layers = self.bert.encoder.layers[:3]
+        self.bert.decoder.layers = self.bert.decoder.layers[:3]
+        self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
         self.bert.train()
-        self.decoder.train()
 
         # self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
         self.classifer = LEDClassificationHead(args.d_model, 3072, 1, args.dropout)
@@ -81,9 +74,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
                             attention_mask=mask_src,
                             global_attention_mask=glob_mask,
                             return_dict=False)
-        top_vec = self.decoder(
-            input_ids=shift_tokens_right(src, self.pad_token_id, self.decoder_start_token_id),
-            encoder_hidden_states=led_outputs[0], return_dict=False)[0]
+        top_vec = led_outputs[0]
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float() 
@@ -100,14 +91,12 @@ class LEDBasicSentenceGenerationModel(nn.Module):
 
         self.model_name = args.model_name
         
-        led_model = LEDModel.from_pretrained(args.bert_model).to('cpu')
-        led_model.resize_token_embeddings(len(tokenizer))
-        self.bert = led_model.get_encoder()
-
-        if args.freeze_bert:
-            self.bert.eval()
-        else: 
-            self.bert.train()
+        self.bert = LEDModel.from_pretrained(args.bert_model)
+        self.bert.resize_token_embeddings(len(tokenizer))
+        self.bert.encoder.layers = self.bert.encoder.layers[:3]
+        self.bert.decoder.layers = self.bert.decoder.layers[:3]
+        self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
+        self.bert.train()
             
         tgt_embeddings = nn.Embedding(len(tokenizer), args.d_model, padding_idx=tokenizer.pad_token_id)
         # tgt_embeddings.weight = copy.deepcopy(self.bert.shared.weight)
@@ -145,8 +134,6 @@ class LEDBasicSentenceGenerationModel(nn.Module):
         
         led_outputs = self.bert(input_ids=src,
                             attention_mask=mask_src,
-                            # token_type_ids=segs, 
-                            # global_attention_mask=glob_mask,
                             return_dict=False)
         top_vec = led_outputs[0]
 

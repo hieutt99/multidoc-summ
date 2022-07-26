@@ -126,7 +126,7 @@ class LEDBasicSentenceGenerationModel(nn.Module):
         # tgt_embeddings.weight = copy.deepcopy(self.bert.shared.weight)
         # tgt_embeddings.weight = copy.deepcopy(self.bert.decoder.embed_tokens.weight)
 
-        tgt_embeddings.weight = copy.deepcopy(self.bert.encoder.embed_tokens.weight)
+        tgt_embeddings.weight = copy.deepcopy(self.bert.embed_tokens.weight)
 
         # tgt_embeddings.weight = self.bert.embed_tokens.weight
 

@@ -13,7 +13,7 @@ layer_norm_eps: 1.0e-6
 d_ff: 2048
 max_position_embeddings: 4000
 
-dec_layers: 6
+dec_layers: 4
 dec_hidden_size: 768
 dec_heads: 8
 dec_ff_size: 2048

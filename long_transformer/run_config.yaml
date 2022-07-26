@@ -10,8 +10,8 @@ model_config_path: model_config.yaml
 checkpoint: null
 
 
-train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/model_step_2000.pt
-# train_from: null
+# train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/model_step_2000.pt
+train_from: null
 test_from: null
 log_file: ./logs/model_log
 

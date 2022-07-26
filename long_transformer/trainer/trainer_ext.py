@@ -82,14 +82,14 @@ class Trainer(object):
                 Thus nothing will be saved if this parameter is None
     """
 
-    def __init__(self, args, model, optim,
+    def __init__(self, args, model, optims,
                  grad_accum_count=1, n_gpu=1, gpu_rank=1,
                  report_manager=None):
         # Basic attributes.
         self.args = args
         self.save_checkpoint_steps = args.save_checkpoint_steps
         self.model = model
-        self.optim = optim
+        self.optims = optims
         self.grad_accum_count = grad_accum_count
         self.n_gpu = n_gpu
         self.gpu_rank = gpu_rank
@@ -124,7 +124,10 @@ class Trainer(object):
         logger.info('Start training...')
 
         # step =  self.optim._step + 1
-        step = self.optim._step + 1
+        # step = self.optim._step + 1
+
+        step =  self.optims[0]._step + 1
+
         true_batchs = []
         accum = 0
         normalization = 0
@@ -156,7 +159,8 @@ class Trainer(object):
 
                         report_stats = self._maybe_report_training(
                             step, train_steps,
-                            self.optim.learning_rate,
+                            # self.optim.learning_rate,
+                            self.optims[0].learning_rate,
                             report_stats)
 
                         true_batchs = []
@@ -343,7 +347,9 @@ class Trainer(object):
                              and p.grad is not None]
                     distributed.all_reduce_and_rescale_tensors(
                         grads, float(1))
-                self.optim.step()
+                # self.optim.step()
+                for o in self.optims:
+                    o.step()
 
         # in case of multi step gradient accumulation,
         # update only after accum batches
@@ -354,7 +360,9 @@ class Trainer(object):
                          and p.grad is not None]
                 distributed.all_reduce_and_rescale_tensors(
                     grads, float(1))
-            self.optim.step()
+            # self.optim.step()
+            for o in self.optims:
+                o.step()
 
     def _save(self, step):
         real_model = self.model
@@ -368,7 +376,8 @@ class Trainer(object):
             'model': model_state_dict,
             # 'generator': generator_state_dict,
             'opt': asdict(self.args.model_config),
-            'optim': self.optim,
+            # 'optim': self.optim,
+            'optims': self.optims,
         }
         checkpoint_path = os.path.join(self.args.model_path, 'model_step_%d.pt' % step)
         logger.info("Saving checkpoint %s" % checkpoint_path)

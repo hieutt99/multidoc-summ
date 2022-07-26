@@ -301,7 +301,13 @@ def train_single_ext(args, device_id):
 
     model = build_model(args.model_config, device, checkpoint, tokenizer)
 
-    optim = train_builder.build_optim(args, model, checkpoint)
+    if (args.sep_optim):
+        optim_bert = train_builder.build_optim_bert(args, model, checkpoint)
+        optim_dec = train_builder.build_optim_dec(args, model, checkpoint)
+        optim = [optim_bert, optim_dec]
+    else:
+        optim = [train_builder.build_optim(args, model, checkpoint)]
+    # optim = train_builder.build_optim(args, model, checkpoint)
 
     logger.info(model)
 

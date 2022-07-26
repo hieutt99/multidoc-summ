@@ -20,11 +20,11 @@ report_rouge: True
 
 
 # general
-batch_size: 300
+batch_size: 200
 test_batch_size: 200
 
-max_pos: 5000
-max_position_embeddings: 5000
+max_pos: 4000
+max_position_embeddings: 4000
 use_interval: True
 
 # hyperparameters
@@ -34,8 +34,8 @@ param_init_glorot: True
 ## optimizer
 optim: adam
 lr: 2.0e-3
-lr_bert: 2.0e-4
-lr_dec: 0.02
+lr_bert: 2.0e-3
+lr_dec: 0.2
 beta1: 0.9
 beta2: 0.999
 warmup_steps: 8000

@@ -1,7 +1,7 @@
 import copy
 from glob import glob
 from models.basic_models import get_generator
-from models.modules.transformer_base import TransformerDecoder
+from models.modules.transformer_base import BasicTransformerEncoder, BasicTransformerEncoderBlock, TransformerDecoder
 import torch.nn as nn 
 import torch 
 from transformers import LEDModel
@@ -51,6 +51,8 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         self.pad_token_id = tokenizer.pad_token_id
         self.decoder_start_token_id = tokenizer.bos_token_id
 
+        self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
+
         self.model_name = args.model_name
 
         self.bert = LEDModel.from_pretrained(args.bert_model)
@@ -60,12 +62,27 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
         self.bert.train()
 
+        encoder_block = BasicTransformerEncoderBlock(args.d_model, args.num_heads, args.d_ff, 
+                                                    args.dropout, args.norm_first)
+        self.encoder = self.encoder = BasicTransformerEncoder(encoder_block, args.num_encoder_blocks, 
+                            nn.LayerNorm(args.d_model, eps=args.layer_norm_eps))
+        for p in self.encoder.parameters():
+            if p.dim()>1:
+                nn.init.xavier_uniform_(p)
+
         # self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
         self.classifer = LEDClassificationHead(args.d_model, 3072, 1, args.dropout)
 
-        self.bert._init_weights(self.classifer.dense)
-        self.bert._init_weights(self.classifer.out_proj)
+        # self.bert._init_weights(self.classifer.dense)
+        # self.bert._init_weights(self.classifer.out_proj)
         self.sigmoid = nn.Sigmoid()
+
+
+        for p in self.classifer.parameters():
+            if p.dim() > 1:
+                nn.init.xavier_uniform_(p)
+            else:
+                p.data.zero_()
 
 
     def forward(self, src, segs, glob_mask, clss, mask_src, mask_cls):
@@ -79,11 +96,18 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float() 
 
-        sent_scores = self.classifer(sents_vec)
+        # with cosine positional
+        pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
+        sents_vec = sents_vec * mask_cls[:, :, None].float()
+        sents_vec = sents_vec + pos_emb
+
+        x = self.encoder(sents_vec, mask_cls)
+        sent_scores = self.classifer(x)
         if not self.training:
             sent_scores = self.sigmoid(sent_scores)
         sent_scores = sent_scores.squeeze(-1) * mask_cls.float()
         return sent_scores, mask_cls
+
 
 class LEDBasicSentenceGenerationModel(nn.Module):
     def __init__(self, args, tokenizer, **kwargs):
@@ -102,7 +126,7 @@ class LEDBasicSentenceGenerationModel(nn.Module):
         # tgt_embeddings.weight = copy.deepcopy(self.bert.shared.weight)
         # tgt_embeddings.weight = copy.deepcopy(self.bert.decoder.embed_tokens.weight)
 
-        tgt_embeddings.weight = copy.deepcopy(self.bert.embed_tokens.weight)
+        tgt_embeddings.weight = copy.deepcopy(self.bert.encoder.embed_tokens.weight)
 
         # tgt_embeddings.weight = self.bert.embed_tokens.weight
 
@@ -124,6 +148,7 @@ class LEDBasicSentenceGenerationModel(nn.Module):
                 module.weight.data.fill_(1.0)
             if isinstance(module, nn.Linear) and module.bias is not None:
                 module.bias.data.zero_()
+
         for p in self.generator.parameters():
             if p.dim() > 1:
                 nn.init.xavier_uniform_(p)

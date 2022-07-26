@@ -37,7 +37,7 @@ class Batch(object):
             else:
                 glob_mask = torch.tensor(0)
             mask_src = ~ (src == 0)
-            # mask_src = torch.where(mask_src == True, 1, 0)
+            mask_src = torch.where(mask_src == True, 1, 0)
             mask_tgt = ~ (tgt == 0)
 
 

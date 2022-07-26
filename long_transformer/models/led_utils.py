@@ -30,20 +30,20 @@ class LEDClassificationHead(nn.Module):
         hidden_states = self.out_proj(hidden_states)
         return hidden_states
 
-def shift_tokens_right(input_ids: torch.Tensor, pad_token_id: int, decoder_start_token_id: int):
-    """
-    Shift input ids one token to the right.
-    """
-    shifted_input_ids = input_ids.new_zeros(input_ids.shape)
-    shifted_input_ids[:, 1:] = input_ids[:, :-1].clone()
-    shifted_input_ids[:, 0] = decoder_start_token_id
+# def shift_tokens_right(input_ids: torch.Tensor, pad_token_id: int, decoder_start_token_id: int):
+#     """
+#     Shift input ids one token to the right.
+#     """
+#     shifted_input_ids = input_ids.new_zeros(input_ids.shape)
+#     shifted_input_ids[:, 1:] = input_ids[:, :-1].clone()
+#     shifted_input_ids[:, 0] = decoder_start_token_id
 
-    # if pad_token_id is None:
-    #     raise ValueError("config.pad_token_id has to be defined.")
-    # replace possible -100 values in labels by `pad_token_id`
-    shifted_input_ids.masked_fill_(shifted_input_ids == -100, pad_token_id)
+#     # if pad_token_id is None:
+#     #     raise ValueError("config.pad_token_id has to be defined.")
+#     # replace possible -100 values in labels by `pad_token_id`
+#     shifted_input_ids.masked_fill_(shifted_input_ids == -100, pad_token_id)
 
-    return shifted_input_ids
+#     return shifted_input_ids
 
 class LEDBasicSentenceClassificationModel(nn.Module):
     def __init__(self, args, tokenizer, **kwargs):
@@ -57,9 +57,11 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
         self.bert = LEDModel.from_pretrained(args.bert_model)
         self.bert.resize_token_embeddings(len(tokenizer))
-        self.bert.encoder.layers = self.bert.encoder.layers[:3]
-        self.bert.decoder.layers = self.bert.decoder.layers[:3]
-        self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
+        self.bert = self.bert.get_encoder()
+        # self.bert.layers = self.bert.layers[:3]
+        # self.bert.encoder.layers = self.bert.encoder.layers[:3]
+        # self.bert.decoder.layers = self.bert.decoder.layers[:3]
+        # self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
         self.bert.train()
 
         encoder_block = BasicTransformerEncoderBlock(args.d_model, args.num_heads, args.d_ff, 
@@ -94,11 +96,11 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         top_vec = led_outputs[0]
 
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
-        sents_vec = sents_vec * mask_cls[:, :, None].float() 
+        sents_vec = sents_vec * mask_cls[:, :, None].float()
 
         # with cosine positional
         pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
-        sents_vec = sents_vec * mask_cls[:, :, None].float()
+        # sents_vec = sents_vec * mask_cls[:, :, None].float()
         sents_vec = sents_vec + pos_emb
 
         x = self.encoder(sents_vec, mask_cls)
@@ -117,9 +119,7 @@ class LEDBasicSentenceGenerationModel(nn.Module):
         
         self.bert = LEDModel.from_pretrained(args.bert_model)
         self.bert.resize_token_embeddings(len(tokenizer))
-        self.bert.encoder.layers = self.bert.encoder.layers[:3]
-        self.bert.decoder.layers = self.bert.decoder.layers[:3]
-        self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
+        self.bert = self.bert.get_encoder()
         self.bert.train()
             
         tgt_embeddings = nn.Embedding(len(tokenizer), args.d_model, padding_idx=tokenizer.pad_token_id)

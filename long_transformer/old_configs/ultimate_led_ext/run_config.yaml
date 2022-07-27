@@ -2,15 +2,15 @@ task: ext
 mode: train
 
 bert_data_path: ./multi_news_bert_led_ext_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models_5/
-result_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models_5/
+model_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/
 temp_dir: ./temp
 
 model_config_path: ./old_configs/ultimate_led_ext/model_config.yaml
 checkpoint: null
 
 
-# train_from: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models_5/model_step_2000.pt
+# train_from: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/model_step_2000.pt
 train_from: null
 test_from: null
 log_file: ./logs/model_log
@@ -20,7 +20,7 @@ report_rouge: True
 
 
 # general
-batch_size: 4000
+batch_size: 2000
 test_batch_size: 200
 
 max_pos: 4000

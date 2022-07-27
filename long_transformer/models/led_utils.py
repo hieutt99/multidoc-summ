@@ -1,6 +1,8 @@
 import copy
 from glob import glob
+from re import L
 from models.basic_models import get_generator
+from models.modules.encoder import ExtTransformerEncoder
 from models.modules.transformer_base import BasicTransformerEncoder, BasicTransformerEncoderBlock, TransformerDecoder
 import torch.nn as nn 
 import torch 
@@ -18,13 +20,14 @@ class LEDClassificationHead(nn.Module):
         pooler_dropout: float,
     ):
         super().__init__()
-        self.dense = nn.Linear(input_dim, inner_dim)
+        # self.dense = nn.Linear(input_dim, inner_dim)
         self.dropout = nn.Dropout(p=pooler_dropout)
-        self.out_proj = nn.Linear(inner_dim, num_classes)
+        # self.out_proj = nn.Linear(inner_dim, num_classes)
+        self.out_proj = nn.Linear(input_dim, num_classes)
 
     def forward(self, hidden_states: torch.Tensor):
-        hidden_states = self.dropout(hidden_states)
-        hidden_states = self.dense(hidden_states)
+        # hidden_states = self.dropout(hidden_states)
+        # hidden_states = self.dense(hidden_states)
         # hidden_states = torch.tanh(hidden_states)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.out_proj(hidden_states)
@@ -51,12 +54,13 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         self.pad_token_id = tokenizer.pad_token_id
         self.decoder_start_token_id = tokenizer.bos_token_id
 
-        self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
+        # self.pos_emb = PositionalEncoding(args.d_model, args.max_position_embeddings, args.dropout)
 
         self.model_name = args.model_name
 
         self.bert = LEDModel.from_pretrained(args.bert_model)
         self.bert.resize_token_embeddings(len(tokenizer))
+        self.encoder = self.bert.get_decoder()
         self.bert = self.bert.get_encoder()
         # self.bert.layers = self.bert.layers[:3]
         # self.bert.encoder.layers = self.bert.encoder.layers[:3]
@@ -64,13 +68,22 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         # self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
         self.bert.train()
 
-        encoder_block = BasicTransformerEncoderBlock(args.d_model, args.num_heads, args.d_ff, 
-                                                    args.dropout, args.norm_first)
-        self.encoder = self.encoder = BasicTransformerEncoder(encoder_block, args.num_encoder_blocks, 
-                            nn.LayerNorm(args.d_model, eps=args.layer_norm_eps))
-        for p in self.encoder.parameters():
-            if p.dim()>1:
-                nn.init.xavier_uniform_(p)
+        # encoder_block = BasicTransformerEncoderBlock(args.d_model, args.num_heads, args.d_ff, 
+        #                                             args.dropout, args.norm_first)
+        # self.encoder = self.encoder = BasicTransformerEncoder(encoder_block, args.num_encoder_blocks, 
+        #                     nn.LayerNorm(args.d_model, eps=args.layer_norm_eps))
+
+        # self.encoder = ExtTransformerEncoder(d_model=args.d_model, 
+        #                 d_ff=args.d_ff, 
+        #                 heads=args.num_heads, 
+        #                 dropout=args.dropout, 
+        #                 num_inter_layers=args.num_encoder_blocks)
+
+        self.encoder.layers = self.encoder.layers[:args.num_encoder_blocks]
+
+        # for p in self.encoder.parameters():
+        #     if p.dim()>1:
+        #         nn.init.xavier_uniform_(p)
 
         # self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
         self.classifer = LEDClassificationHead(args.d_model, 3072, 1, args.dropout)
@@ -90,7 +103,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
     def forward(self, src, segs, glob_mask, clss, mask_src, mask_cls):
         
         led_outputs = self.bert(input_ids=src,
-                            attention_mask=mask_src,
+                            attention_mask=mask_src.float(),
                             global_attention_mask=glob_mask,
                             return_dict=False)
         top_vec = led_outputs[0]
@@ -99,14 +112,17 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         sents_vec = sents_vec * mask_cls[:, :, None].float()
 
         # with cosine positional
-        pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
-        # sents_vec = sents_vec * mask_cls[:, :, None].float()
-        sents_vec = sents_vec + pos_emb
+        # pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
+        # # sents_vec = sents_vec * mask_cls[:, :, None].float()
+        # sents_vec = sents_vec + pos_emb
 
-        x = self.encoder(sents_vec, mask_cls)
+        # x = self.encoder(sents_vec, mask_cls)
+        x = self.encoder(inputs_embeds=sents_vec, 
+                attention_mask=mask_cls.float(), 
+                encoder_hidden_states=top_vec,
+                return_dict=False)[0]
         sent_scores = self.classifer(x)
-        if not self.training:
-            sent_scores = self.sigmoid(sent_scores)
+        sent_scores = self.sigmoid(sent_scores)
         sent_scores = sent_scores.squeeze(-1) * mask_cls.float()
         return sent_scores, mask_cls
 

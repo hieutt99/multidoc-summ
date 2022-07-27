@@ -240,8 +240,8 @@ class Translator(object):
             
             gold_str = gold.strip()
 
-            print(pred_str)
-            print(gold_str)
+            # print(pred_str)
+            # print(gold_str)
             if(self.args.recall_eval):
                 _pred_str = ''
                 gap = 1e3

@@ -95,9 +95,9 @@ class Trainer(object):
         self.gpu_rank = gpu_rank
         self.report_manager = report_manager
 
-        # self.loss = torch.nn.BCELoss(reduction='none')
+        self.loss = torch.nn.BCELoss(reduction='none')
 
-        self.loss = torch.nn.BCEWithLogitsLoss(reduction='none')
+        # self.loss = torch.nn.BCEWithLogitsLoss(reduction='none')
         assert grad_accum_count > 0
         # Set model in training mode.
         if (model):

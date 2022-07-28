@@ -226,6 +226,7 @@ class Translator(object):
         save_src = ''
 
         tmp = []
+        tmp_ = []
         for trans in translations:
             pred, gold, src = trans
             # pred_str = pred.replace(f'{self.start_} {self.end_}', '<q>').replace(self.end_, '').replace(self.start_, '').replace(self.pad_, '').strip()
@@ -255,10 +256,11 @@ class Translator(object):
                         gap = can_gap
                         _pred_str = can_pred_str
             tmp.append(len(pred_str.split()))
+            tmp_.append(len(gold_str.split()))
             save_pred += f'{pred_str}\n'
             save_gold += f'{gold_str}\n'
             save_src += f'{src.strip()}\n'
-        return save_pred, save_gold, save_src, len(translations), sum(tmp)/len(tmp)
+        return save_pred, save_gold, save_src, len(translations), sum(tmp)/len(tmp), sum(tmp_)/len(tmp_)
 
     def translate(self,
                   data_iter, step,
@@ -274,14 +276,14 @@ class Translator(object):
         self.src_out_file = codecs.open(raw_src_path, 'w', 'utf-8')
 
         ct = 0
-        with torch.no_grad(), ThreadPoolExecutor(4) as executor:
+        with torch.no_grad(), ThreadPoolExecutor(2) as executor:
             futures = []
             for batch in data_iter:
                 futures.append(executor.submit(self._handle, batch))
 
             pbar = tqdm(list(range(len(futures))))
             for future in as_completed(futures):
-                save_pred, save_gold, save_src, c, av = future.result()
+                save_pred, save_gold, save_src, c, av, av_ = future.result()
                 self.can_out_file.write(save_pred)
                 self.gold_out_file.write(save_gold)
                 self.src_out_file.write(save_src)
@@ -290,7 +292,7 @@ class Translator(object):
                 self.gold_out_file.flush()
                 self.src_out_file.flush()
                 pbar.update(1)
-                pbar.set_postfix(c=c, avg=av)
+                pbar.set_postfix(c=c, can_avg=av, gold_avg=av_)
 
             pbar.close()
 

@@ -11,10 +11,14 @@ def build_optim(args, model, checkpoint):
     """ Build optimizer """
 
     if checkpoint is not None:
-        if isinstance(checkpoint['optim'], Optimizer):
-            optim = checkpoint['optim']
+        if 'optim' in checkpoint.keys():
+            key = 'optim'
         else:
-            optim = checkpoint['optim'][0]
+            key = 'optims'
+        if isinstance(checkpoint[key], Optimizer):
+            optim = checkpoint[key]
+        else:
+            optim = checkpoint[key][0]
         saved_optimizer_state_dict = optim.optimizer.state_dict()
         optim.optimizer.load_state_dict(saved_optimizer_state_dict)
 

@@ -2,15 +2,15 @@ task: abs
 mode: train
 
 bert_data_path: ./multi_news_bert_led_abs_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
+model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs_8000/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs_8000/saved_models/
 temp_dir: ./temp
 
-model_config_path: model_config.yaml
+model_config_path: ./old_configs/led_abs_8000/model_config.yaml
 checkpoint: null
 
 
-train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/model_step_40000.pt
+# train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models_8000/model_step_40000.pt
 # train_from: null
 test_from: null
 log_file: ./logs/model_log
@@ -23,8 +23,8 @@ report_rouge: True
 batch_size: 200
 test_batch_size: 200
 
-max_pos: 4000
-max_position_embeddings: 4000
+max_pos: 8000
+max_position_embeddings: 8000
 use_interval: True
 
 # hyperparameters

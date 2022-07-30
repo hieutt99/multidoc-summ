@@ -1,9 +1,9 @@
-task: abs
-mode: validate
+task: data_gen
+mode: test
 
-bert_data_path: ./multi_news_bert_led_abs_shards/multi_news.bert_data
-model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
-result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models/
+bert_data_path: ./multi_news_bert_led_shards/multi_news.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
+result_path: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/
 temp_dir: ./temp
 
 model_config_path: model_config.yaml
@@ -11,7 +11,7 @@ checkpoint: null
 
 
 train_from: null
-test_from: null
+test_from: /content/gdrive/MyDrive/__projects/thesis/bertext/saved_models_led/model_step_19000.pt
 log_file: ./logs/model_log
 
 block_trigram: True
@@ -19,11 +19,11 @@ report_rouge: True
 
 
 # general
-batch_size: 2000
-test_batch_size: 2000
+batch_size: 1500
+test_batch_size: 200
 
-max_pos: 4000
-max_position_embeddings: 4000
+max_pos: 1024
+max_position_embeddings: 1024
 use_interval: True
 
 # hyperparameters
@@ -45,16 +45,16 @@ save_checkpoint_steps: 1000
 accum_count: 5
 report_every: 100
 train_steps: 20000
-recall_eval: True
+recall_eval: False
 ## trainer 
 label_smoothing: 0.1
 generator_shard_size: 32
 alpha: 0.6 
 beam_size: 5
-min_length: 150
-max_length: 1024
-max_tgt_len: 1024 
-ext_predict_nsents: 20
+min_length: 5
+max_length: 15
+max_tgt_len: 200 
+ext_predict_nsents: 15
 
 # gpu
 visible_gpus: '0'
@@ -63,7 +63,4 @@ world_size: 1
 seed: 666
 
 test_all: true
-load_from_extractive: ""
-sep_optim: True
 
-test_start_from: -1

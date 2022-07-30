@@ -19,7 +19,7 @@ report_rouge: True
 
 
 # general
-batch_size: 5000
+batch_size: 50000
 test_batch_size: 5000
 
 max_pos: 4000

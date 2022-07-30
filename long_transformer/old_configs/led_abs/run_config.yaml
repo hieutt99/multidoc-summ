@@ -6,12 +6,12 @@ model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs_8000/saved_mod
 result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs_8000/saved_models/
 temp_dir: ./temp
 
-model_config_path: ./old_configs/led_abs_8000/model_config.yaml
+model_config_path: ./old_configs/led_abs/model_config.yaml
 checkpoint: null
 
 
 # train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_abs/saved_models_8000/model_step_40000.pt
-# train_from: null
+train_from: null
 test_from: null
 log_file: ./logs/model_log
 
@@ -23,8 +23,8 @@ report_rouge: True
 batch_size: 200
 test_batch_size: 200
 
-max_pos: 8000
-max_position_embeddings: 8000
+max_pos: 4000
+max_position_embeddings: 4000
 use_interval: True
 
 # hyperparameters
@@ -45,18 +45,18 @@ max_grad_norm: 0
 
 # train phase
 save_checkpoint_steps: 1000
-accum_count: 5
+accum_count: 2
 report_every: 100
-train_steps: 50000
+train_steps: 20000
 recall_eval: False
 ## trainer 
-label_smoothing: 0.1
+label_smoothing: 0.0
 generator_shard_size: 32
-alpha: 0.6 
+alpha: 0.8
 beam_size: 5
 min_length: 150
 max_length: 1024
-max_tgt_len: 2048 
+max_tgt_len: 1024 
 ext_predict_nsents: 10
 
 # gpu

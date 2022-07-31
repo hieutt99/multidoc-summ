@@ -45,11 +45,11 @@ save_checkpoint_steps: 1000
 accum_count: 5
 report_every: 100
 train_steps: 20000
-recall_eval: True
+recall_eval: False
 ## trainer 
 label_smoothing: 0.1
 generator_shard_size: 32
-alpha: 1.5
+alpha: 1.0
 beam_size: 5
 min_length: 300
 max_length: 1024

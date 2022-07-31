@@ -6,7 +6,7 @@ model_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/
 result_path: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/
 temp_dir: ./temp
 
-model_config_path: model_config.yaml
+model_config_path: ./old_configs/ultimate_led_ext/model_config.yaml
 checkpoint: null
 
 
@@ -19,7 +19,7 @@ report_rouge: True
 
 
 # general
-batch_size: 50000
+batch_size: 5000
 test_batch_size: 5000
 
 max_pos: 4000

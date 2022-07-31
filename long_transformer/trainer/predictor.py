@@ -276,7 +276,7 @@ class Translator(object):
         self.src_out_file = codecs.open(raw_src_path, 'w', 'utf-8')
 
         ct = 0
-        with torch.no_grad(), ThreadPoolExecutor(2) as executor:
+        with torch.no_grad(), ThreadPoolExecutor(1) as executor:
             futures = []
             for batch in data_iter:
                 futures.append(executor.submit(self._handle, batch))

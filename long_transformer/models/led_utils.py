@@ -122,7 +122,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         # x = self.encoder(sents_vec, mask_cls)
         x = self.encoder(inputs_embeds=sents_vec, 
                 attention_mask=mask_cls.float(), 
-                encoder_hidden_states=top_vec,
+                # encoder_hidden_states=top_vec,
                 return_dict=False)[0]
 
         sent_scores = self.classifier(x)

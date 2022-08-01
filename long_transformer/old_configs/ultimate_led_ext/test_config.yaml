@@ -22,8 +22,8 @@ report_rouge: True
 batch_size: 5000
 test_batch_size: 5000
 
-max_pos: 4000
-max_position_embeddings: 4000
+max_pos: 8000
+max_position_embeddings: 8000
 use_interval: True
 
 # hyperparameters
@@ -54,7 +54,7 @@ beam_size: 5
 min_length: 5
 max_length: 15
 max_tgt_len: 200 
-ext_predict_nsents: 20
+ext_predict_nsents: 40
 
 # gpu
 visible_gpus: '0'

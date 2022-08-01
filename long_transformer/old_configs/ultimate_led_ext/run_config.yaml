@@ -20,7 +20,7 @@ report_rouge: True
 
 
 # general
-batch_size: 2000
+batch_size: 1500
 test_batch_size: 200
 
 max_pos: 8000
@@ -50,7 +50,7 @@ lr_bert: 2.0e-3
 lr_dec: 0.2
 beta1: 0.9
 beta2: 0.999
-warmup_steps: 20000
+warmup_steps: 4000
 warmup_steps_bert: 20000
 warmup_steps_dec: 10000
 max_grad_norm: 0

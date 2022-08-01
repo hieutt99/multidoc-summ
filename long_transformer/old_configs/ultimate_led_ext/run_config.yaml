@@ -10,8 +10,8 @@ model_config_path: ./old_configs/ultimate_led_ext/model_config.yaml
 checkpoint: null
 
 
-# train_from: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/model_step_30000.pt
-train_from: null
+train_from: /content/gdrive/MyDrive/__projects/thesis/ext/led_ext/saved_models/model_step_40000.pt
+# train_from: null
 test_from: null
 log_file: ./logs/model_log
 
@@ -20,7 +20,7 @@ report_rouge: True
 
 
 # general
-batch_size: 1500
+batch_size: 1000
 test_batch_size: 200
 
 max_pos: 8000
@@ -45,7 +45,7 @@ param_init: 0
 param_init_glorot: True
 ## optimizer
 optim: adam
-lr: 2.0e-2
+lr: 2.0e-3
 lr_bert: 2.0e-3
 lr_dec: 0.2
 beta1: 0.9
@@ -61,7 +61,7 @@ max_grad_norm: 0
 save_checkpoint_steps: 1000
 accum_count: 5
 report_every: 100
-train_steps: 20000
+train_steps: 50000
 recall_eval: False
 ## trainer 
 label_smoothing: 0.1

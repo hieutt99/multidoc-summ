@@ -149,7 +149,7 @@ class ReportMgr(ReportMgrBase):
                                        step)
 
         if valid_stats is not None:
-            self.log('Validation xent: %g at step %d' % (valid_stats.xent(), step))
+            self.log('Validation xent: %g Est accuracy: %g at step %d' % (valid_stats.xent(), valid_stats.acc(), step))
 
             self.maybe_log_tensorboard(valid_stats,
                                        "valid",
@@ -167,10 +167,13 @@ class Statistics(object):
     * elapsed time
     """
 
-    def __init__(self, loss=0, n_docs=0, n_correct=0):
+    def __init__(self, loss=0, n_docs=0, n_correct=0, n_total=0, acc = 0):
         self.loss = loss
         self.n_docs = n_docs
         self.start_time = time.time()
+        self.n_correct = n_correct
+        self.n_total = n_total
+        self.est_acc = acc
 
     @staticmethod
     def all_gather_stats(stat, max_size=4096):
@@ -229,12 +232,18 @@ class Statistics(object):
         self.loss += stat.loss
 
         self.n_docs += stat.n_docs
+        self.est_acc += stat.est_acc
 
     def xent(self):
         """ compute cross entropy """
         if (self.n_docs == 0):
             return 0
         return self.loss / self.n_docs
+
+    def acc(self):
+        if (self.n_docs == 0):
+            return 0
+        return self.est_acc / self.n_docs
 
     def elapsed_time(self):
         """ compute elapsed time """
@@ -253,10 +262,11 @@ class Statistics(object):
         if num_steps > 0:
             step_fmt = "%s/%5d" % (step_fmt, num_steps)
         logger.info(
-            ("Step %s; xent: %4.2f; " +
+            ("Step %s; xent: %4.2f; est_acc: %4.2f; " +
              "lr: %7.7f; %3.0f docs/s; %6.0f sec")
             % (step_fmt,
                self.xent(),
+               self.acc(),
                learning_rate,
                self.n_docs / (t + 1e-5),
                time.time() - start))

@@ -60,7 +60,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
         self.bert = LEDModel.from_pretrained(args.bert_model)
         self.bert.resize_token_embeddings(len(tokenizer))
-        # self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
+        self.bert.decoder.embed_positions = copy.deepcopy(self.bert.encoder.embed_positions)
 
         self.encoder = self.bert.get_decoder()
         
@@ -83,13 +83,15 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         #                 num_inter_layers=args.num_encoder_blocks)
 
         self.encoder.layers = self.encoder.layers[:args.num_encoder_blocks]
+        # self.encoder.embed_positions = copy.deepcopy(self.bert.embed_positions)
+        self.encoder.train()
 
         # for p in self.encoder.parameters():
         #     if p.dim()>1:
         #         nn.init.xavier_uniform_(p)
 
-        # self.classifer = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
-        self.classifier = LEDClassificationHead(args.d_model, 3072, 1, args.dropout)
+        self.classifier = LEDClassificationHead(args.d_model, args.d_model, 1, args.dropout)
+        # self.classifier = LEDClassificationHead(args.d_model, 3072, 1, args.dropout)
 
         # self.bert._init_weights(self.classifer.dense)
         # self.bert._init_weights(self.classifer.out_proj)
@@ -115,15 +117,19 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         sents_vec = sents_vec * mask_cls[:, :, None].float()
 
         # with cosine positional
-        # pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
-        # # sents_vec = sents_vec * mask_cls[:, :, None].float()
-        # sents_vec = sents_vec + pos_emb
+        pos_emb = self.pos_emb.pe[:, :sents_vec.size(1)]
+        # sents_vec = sents_vec * mask_cls[:, :, None].float()
+        sents_vec = sents_vec + pos_emb
 
         # x = self.encoder(sents_vec, mask_cls)
         x = self.encoder(inputs_embeds=sents_vec, 
+                # attention_mask=mask_src.float(), 
                 attention_mask=mask_cls.float(), 
                 # encoder_hidden_states=top_vec,
                 return_dict=False)[0]
+
+        # x = top_vec[torch.arange(x.size(0)).unsqueeze(1), clss]
+        # x = x * mask_cls[:, :, None].float()
 
         sent_scores = self.classifier(x)
         sent_scores = self.sigmoid(sent_scores)

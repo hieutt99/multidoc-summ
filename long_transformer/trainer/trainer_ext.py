@@ -332,7 +332,12 @@ class Trainer(object):
             loss = (loss * mask.float()).sum()
             (loss / loss.numel()).backward()
 
-            batch_stats = Statistics(float(loss.cpu().data.numpy()), normalization)
+            t = torch.sum(labels).item()
+            # m = torch.mean(sent_scores).item()
+            m = 0.1
+            p = torch.sum(((sent_scores > m) & (labels == 1)).float()).item()
+
+            batch_stats = Statistics(float(loss.cpu().data.numpy()), normalization, acc=p/t*100)
 
             total_stats.update(batch_stats)
             report_stats.update(batch_stats)

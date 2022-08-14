@@ -10,7 +10,7 @@ model_config_path: ./old_configs/ultimate_led_ext/model_config.yaml
 checkpoint: null
 
 train_from: null
-test_from: ./saved_models/led_ext_model
+test_from: ./saved_models/led_ext_model.pt
 log_file: ./logs/model_log
 
 block_trigram: True

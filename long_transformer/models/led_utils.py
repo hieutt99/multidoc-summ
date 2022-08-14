@@ -113,9 +113,9 @@ class LEDBasicSentenceClassificationModel(nn.Module):
         top_vec = led_outputs[0]
 
 
-        print(top_vec.size())
-        print(torch.arange(top_vec.size(0)).unsqueeze(1).size())
-        print(clss.size())
+        # print(top_vec.size())
+        # print(torch.arange(top_vec.size(0)).unsqueeze(1).size())
+        # print(clss.size())
         sents_vec = top_vec[torch.arange(top_vec.size(0)).unsqueeze(1), clss]
         sents_vec = sents_vec * mask_cls[:, :, None].float()
 

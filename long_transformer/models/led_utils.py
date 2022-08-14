@@ -105,6 +105,7 @@ class LEDBasicSentenceClassificationModel(nn.Module):
 
 
     def forward(self, src, segs, glob_mask, clss, mask_src, mask_cls):
+        print(src.size())
         
         led_outputs = self.bert(input_ids=src,
                             attention_mask=mask_src.float(),

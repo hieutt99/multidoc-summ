@@ -6,12 +6,12 @@ model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_mod
 result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models/
 temp_dir: ./temp
 
-model_config_path: model_config.yaml
+model_config_path: ./old_configs/bert_abs_finest_finest/model_config.yaml
 checkpoint: null
 
 
 train_from: null
-test_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models/model_step_40000.pt
+test_from: ./saved_models/bert_abs_model.pt
 log_file: ./logs/model_log
 
 block_trigram: True

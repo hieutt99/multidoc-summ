@@ -1,0 +1,72 @@
+task: abs
+mode: train
+
+bert_data_path: ./abs_bert_data_shards/multi_news_abs.bert_data
+model_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models/
+result_path: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models/
+temp_dir: ./temp
+
+model_config_path: ./old_configs/bert_abs_finest_finest/model_config.yaml
+checkpoint: null
+
+
+train_from: /content/gdrive/MyDrive/__projects/thesis/abs/led_bert_abs/saved_models/model_step_40000.pt
+# train_from: null
+test_from: null
+log_file: ./logs/model_log
+
+block_trigram: True
+report_rouge: True
+
+
+# general
+batch_size: 1000
+test_batch_size: 200
+
+max_pos: 512
+max_position_embeddings: 512
+use_interval: True
+
+# hyperparameters
+## param init 
+param_init: 0
+param_init_glorot: True
+## optimizer
+optim: adam
+lr: 2.0e-3
+lr_bert: 2.0e-3
+lr_dec: 0.2
+beta1: 0.9
+beta2: 0.999
+warmup_steps: 8000
+warmup_steps_bert: 20000
+warmup_steps_dec: 10000
+max_grad_norm: 0
+
+# train phase
+save_checkpoint_steps: 1000
+accum_count: 5
+report_every: 100
+train_steps: 60000
+recall_eval: False
+## trainer 
+label_smoothing: 0.1
+generator_shard_size: 32
+alpha: 0.6 
+beam_size: 5
+min_length: 150
+max_length: 600
+max_tgt_len: 600 
+ext_predict_nsents: 10
+
+# gpu
+visible_gpus: '0'
+gpu_ranks: '0'
+world_size: 1
+seed: 666
+
+
+test_all: true
+
+load_from_extractive: ""
+sep_optim: True

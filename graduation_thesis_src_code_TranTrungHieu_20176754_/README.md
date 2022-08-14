@@ -28,7 +28,3 @@ python train.py --run_config test_config.yaml
 ```
 
 The rest configs have been put on the folder `old_configs`
-
-## Demo 
-
-notebook : Multi_doc_Summarization_Graduation_Thesis_demo.ipynb
